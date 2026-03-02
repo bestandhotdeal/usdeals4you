@@ -9,6 +9,7 @@ from app.routers.status import router as status_router
 from app.routers.alerts import router as alerts_router
 
 from app.routers import admin_mail
+from app.routers import cron_jobs
 
 BASE_DIR = Path(__file__).resolve().parents[1]   # app/ -> backend/
 load_dotenv(BASE_DIR / ".env")
@@ -28,6 +29,7 @@ app.add_middleware(
 app.include_router(status_router)
 app.include_router(alerts_router)
 app.include_router(admin_mail.router)
+app.include_router(cron_jobs.router)
 
 
 @app.get("/")
