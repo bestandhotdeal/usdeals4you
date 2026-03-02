@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andy Deal Hub</title>
+  <meta name="description" content="Daily deals, coupons, and flash sales." />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- BUILD_MARK: 2026-02-28 v999 -->
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo">AD</div>
+        <div>
+          <div class="brand-title">Andy Deal Hub</div>
+          <div class="brand-sub" id="brandSub">Deals • Coupons • Flash Sale</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn alert-btn" id="openAlertBtn">🔔 Alert Deal</button>
+        <button class="btn" id="langEnBtn">EN</button>
+        <button class="btn" id="langViBtn">VI</button>
+        <a class="btn" href="admin.html">Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-wrap">
+    <section class="hero">
+      <h1 id="heroTitle">Daily deals from top stores</h1>
+      <p id="heroDesc">Curated deals from Apple, Walmart, Costco, beauty, electronics, autos and more.</p>
+    </section>
+
+    <section class="toolbar">
+      <div class="tool">
+        <input id="searchInput" type="text" placeholder="Search deals..." />
+      </div>
+      <div class="tool">
+        <select id="groupFilter"></select>
+      </div>
+      <div class="tool">
+        <select id="storeFilter"></select>
+      </div>
+      <div class="tool">
+        <select id="sortFilter">
+          <option value="new">Newest</option>
+          <option value="discount">Biggest discount</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+          <option value="popular">Most popular</option>
+        </select>
+      </div>
+    </section>
+
+    <div class="notice" id="affiliateNotice">
+      Affiliate disclosure: Some links are affiliate links. If you buy through them, I may earn a small commission at no extra cost to you.
+    </div>
+
+    <div class="layout">
+      <!-- LEFT -->
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-title-row">
+            <h2 id="popularTitle">Popular Deals</h2>
+          </div>
+          <div id="popularList" class="popular-list"></div>
+        </div>
+
+        <div class="panel mt12">
+          <div class="panel-title-row">
+            <h2 id="groupsTitle">Categories</h2>
+          </div>
+          <div id="groupQuickList" class="quick-list"></div>
+        </div>
+      </aside>
+
+      <!-- RIGHT -->
+      <section class="content">
+        <div class="panel panel-flex">
+          <div class="panel-title-row">
+            <h2 id="featuredTitle">Featured Deals</h2>
+            <div class="muted" id="dealCount">0 deals</div>
+          </div>
+          <div id="dealGrid" class="deal-grid"></div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-title">Andy Deal Hub</div>
+        <div class="footer-sub">Categories • Stores • Daily hot deals</div>
+      </div>
+      <div class="footer-meta">
+        <span>© <span id="footerYear"></span> Andy Deal Hub</span>
+        <span>Built for deals tracking</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal hidden" id="alertModal" aria-hidden="true">
+    <div class="modal-backdrop" data-alert-close="1"></div>
+    <div class="modal-card">
+      <div class="panel-title-row">
+        <h2>🔔 Add a Custom Deal Alert</h2>
+        <button class="btn mini-btn" type="button" id="closeAlertBtn">✕</button>
+      </div>
+      <form id="alertForm" class="form-grid">
+        <div class="field">
+          <label>Title / Short Name</label>
+          <input id="alertKeyword" type="text" placeholder="tivi / shoe / iphone..." required />
+        </div>
+
+        <div class="field">
+          <label>Notification Email</label>
+          <input id="alertEmail" type="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="row-inline">
+          <button class="btn primary" type="submit">Add Alert</button>
+        </div>
+
+        <div id="alertStatus" class="status"></div>
+        <div class="muted">Alert request will be saved. (Email sending needs your backend/automation worker connected to process these alerts.)</div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabase-config.js"></script>
+  <script>
+    // ===== Helpers =====
+    const sb = window.sb;
+    const LS_LANG = "deal_lang_v1";
+    const LS_ALERTS = "deal_alert_requests_v1";
+
+    const I18N = {
+      en: {
+        brandSub: "Deals • Coupons • Flash Sale",
+        heroTitle: "Daily deals from top stores",
+        heroDesc: "Curated deals from Apple, Walmart, Costco, beauty, electronics, autos and more.",
+        searchPh: "Search deals...",
+        affiliate: "Affiliate disclosure: Some links are affiliate links. If you buy through them, I may earn a small commission at no extra cost to you.",
+        popular: "Popular Deals",
+        groups: "Categories",
+        featured: "Featured Deals",
+        count: (n) => `${n} deal${n === 1 ? "" : "s"}`,
+        allGroups: "Categories",
+        newest: "Newest",
+        discount: "Biggest discount",
+        low: "Price: low to high",
+        high: "Price: high to low",
+        popularSort: "Most popular",
+        view: "View Deal",
+        detail: "Details",
+        start: "Start deal",
+        expire: "Expires",
+        noDeals: "No deals found.",
+        allStores: "All Stores",
+        alertSaved: "Alert saved ✅",
+        alertNeedFields: "Please enter title and email.",
+      },
+      vi: {
+        brandSub: "Deal • Mã giảm giá • Flash Sale",
+        heroTitle: "Deal hot mỗi ngày từ các store lớn",
+        heroDesc: "Tổng hợp deal từ Apple, Walmart, Costco, làm đẹp, điện tử, xe và nhiều nhóm khác.",
+        searchPh: "Tìm deal...",
+        affiliate: "Lưu ý affiliate: Một số link là affiliate links. Nếu bạn mua qua link, mình có thể nhận hoa hồng nhỏ (không tăng giá của bạn).",
+        popular: "Deal phổ biến",
+        groups: "Danh mục",
+        featured: "Deal nổi bật",
+        count: (n) => `${n} deal`,
+        allGroups: "Danh mục",
+        newest: "Mới nhất",
+        discount: "Giảm nhiều nhất",
+        low: "Giá thấp → cao",
+        high: "Giá cao → thấp",
+        popularSort: "Phổ biến nhất",
+        view: "Xem deal",
+        detail: "Chi tiết",
+        start: "Bắt đầu",
+        expire: "Hết hạn",
+        noDeals: "Không có deal phù hợp.",
+        allStores: "Tất cả store",
+        alertSaved: "Đã lưu alert ✅",
+        alertNeedFields: "Vui lòng nhập tên và email.",
+      }
+    };
+
+    function esc(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+    function getLang() { return localStorage.getItem(LS_LANG) || "en"; }
+    function setLang(v) { localStorage.setItem(LS_LANG, v); }
+    function hasPrice(v) {
+      if (v === null || v === undefined) return false;
+      const s = String(v).trim();
+      if (!s) return false;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0;
+    }
+    function money(v) {
+      if (!hasPrice(v)) return "";
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(v));
+    }
+    function compactPriceHtml(d) {
+      const parts = [];
+      if (hasPrice(d.new_price)) parts.push(money(d.new_price));
+      if (hasPrice(d.old_price)) parts.push(`<span>${money(d.old_price)}</span>`);
+      if (!parts.length) parts.push(`<span class="empty-price">No price</span>`);
+      return parts.join(" ");
+    }
+    function priceRowHtml(d, t) {
+      const pct = discountPct(d);
+      const hasNew = hasPrice(d.new_price);
+      const hasOld = hasPrice(d.old_price);
+      if (!hasNew && !hasOld) {
+        return `<div class="price-row"><div class="price-note">${esc(t.view)}</div></div>`;
+      }
+      return `
+        <div class="price-row">
+          <div class="price-new">${hasNew ? money(d.new_price) : ""}</div>
+          <div class="price-old">${hasOld ? money(d.old_price) : ""}</div>
+          ${pct ? `<div class="save-chip">-${pct}%</div>` : ""}
+        </div>
+      `;
+    }
+    function formatDate(iso, lang) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString(lang === "vi" ? "vi-VN" : "en-US", { dateStyle: "medium", timeStyle: "short" });
+    }
+    function discountPct(d) {
+      if (!hasPrice(d.old_price) || !hasPrice(d.new_price)) return 0;
+      const oldP = Number(d.old_price);
+      const newP = Number(d.new_price);
+      if (!oldP || newP > oldP || newP < 0) return 0;
+      return Math.round(((oldP - newP) / oldP) * 100);
+    }
+    function isNewDeal(d) {
+      if (!d.created_at) return false;
+      const age = Date.now() - new Date(d.created_at).getTime();
+      return age <= 3 * 24 * 3600 * 1000;
+    }
+    function groupName(g, lang) {
+      if (!g) return lang === "vi" ? "Khác" : "Other";
+      return lang === "vi" ? (g.name_vi || g.name_en) : (g.name_en || g.name_vi || "Other");
+    }
+
+    // ===== Supabase data =====
+    async function fetchGroups() {
+      const { data, error } = await sb
+        .from("deal_groups")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
+        .order("name_en", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function fetchDeals() {
+      const { data, error } = await sb
+        .from("deals")
+        .select(`
+          *,
+          deal_group:group_id (
+            id, slug, name_en, name_vi, icon, is_active, sort_order
+          )
+        `)
+        .eq("published", true)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function trackClick({ dealId, slug, source, lang }) {
+      if (!dealId) return;
+      try {
+        await sb.from("deal_clicks").insert({
+          deal_id: dealId,
+          slug: slug || null,
+          source: source || "web",
+          lang: lang || "en",
+          page_path: location.pathname + location.search,
+          referrer: document.referrer || null
+        });
+      } catch (e) {
+        console.warn("track click failed", e.message);
+      }
+    }
+
+    async function reactToDeal(dealId, vote) {
+      // vote: 1 or -1
+      if (!dealId) return;
+      const { data: deal, error: e1 } = await sb
+        .from("deals")
+        .select("id, like_count, dislike_count")
+        .eq("id", dealId)
+        .single();
+      if (e1) throw e1;
+
+      const patch = {};
+      if (vote === 1) patch.like_count = Number(deal.like_count || 0) + 1;
+      if (vote === -1) patch.dislike_count = Number(deal.dislike_count || 0) + 1;
+
+      const { data, error: e2 } = await sb
+        .from("deals")
+        .update(patch)
+        .eq("id", dealId)
+        .select("id, like_count, dislike_count")
+        .single();
+      if (e2) throw e2;
+      return data;
+    }
+
+    // ===== State =====
+    let lang = getLang();
+    let groups = [];
+    let deals = [];
+
+    const el = {
+      langEnBtn: document.getElementById("langEnBtn"),
+      langViBtn: document.getElementById("langViBtn"),
+      brandSub: document.getElementById("brandSub"),
+      heroTitle: document.getElementById("heroTitle"),
+      heroDesc: document.getElementById("heroDesc"),
+      searchInput: document.getElementById("searchInput"),
+      groupFilter: document.getElementById("groupFilter"),
+      storeFilter: document.getElementById("storeFilter"),
+      sortFilter: document.getElementById("sortFilter"),
+      affiliateNotice: document.getElementById("affiliateNotice"),
+      popularTitle: document.getElementById("popularTitle"),
+      groupsTitle: document.getElementById("groupsTitle"),
+      featuredTitle: document.getElementById("featuredTitle"),
+      dealCount: document.getElementById("dealCount"),
+      dealGrid: document.getElementById("dealGrid"),
+      popularList: document.getElementById("popularList"),
+      groupQuickList: document.getElementById("groupQuickList"),
+      openAlertBtn: document.getElementById("openAlertBtn"),
+      alertModal: document.getElementById("alertModal"),
+      closeAlertBtn: document.getElementById("closeAlertBtn"),
+      alertForm: document.getElementById("alertForm"),
+      alertKeyword: document.getElementById("alertKeyword"),
+      alertEmail: document.getElementById("alertEmail"),
+      alertStatus: document.getElementById("alertStatus"),
+      footerYear: document.getElementById("footerYear"),
+    };
+
+    function applyI18n() {
+      const t = I18N[lang];
+      document.documentElement.lang = lang;
+      el.brandSub.textContent = t.brandSub;
+      el.heroTitle.textContent = t.heroTitle;
+      el.heroDesc.textContent = t.heroDesc;
+      el.searchInput.placeholder = t.searchPh;
+      el.affiliateNotice.textContent = t.affiliate;
+      el.popularTitle.textContent = t.popular;
+      el.groupsTitle.textContent = t.groups;
+      el.featuredTitle.textContent = t.featured;
+      el.langEnBtn.classList.toggle("primary", lang === "en");
+      el.langViBtn.classList.toggle("primary", lang === "vi");
+
+      el.sortFilter.options[0].text = t.newest;
+      el.sortFilter.options[1].text = t.discount;
+      el.sortFilter.options[2].text = t.low;
+      el.sortFilter.options[3].text = t.high;
+      el.sortFilter.options[4].text = t.popularSort;
+
+      renderGroupFilter();
+      renderStoreFilter();
+      renderQuickGroups();
+      renderPopular();
+      renderDeals();
+    }
+
+    function renderGroupFilter() {
+      const t = I18N[lang];
+      const current = el.groupFilter.value || "all";
+      el.groupFilter.innerHTML = `
+        <option value="all">${esc(t.allGroups)}</option>
+        ${groups.map(g => `<option value="${g.id}">${esc((g.icon ? g.icon + " " : "") + groupName(g, lang))}</option>`).join("")}
+      `;
+      el.groupFilter.value = groups.some(g => g.id === current) ? current : "all";
+    }
+
+
+    function getStoreOptions() {
+      const seen = new Map();
+      for (const d of deals) {
+        const raw = String(d.store || "").trim();
+        if (!raw) continue;
+        const key = raw.toLowerCase();
+        if (!seen.has(key)) seen.set(key, raw);
+      }
+      return [...seen.entries()]
+        .map(([key, label]) => ({ key, label }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function renderStoreFilter() {
+      const current = el.storeFilter.value || "all";
+      const t = I18N[lang];
+      const stores = getStoreOptions();
+      el.storeFilter.innerHTML = `
+        <option value="all">${esc(t.allStores)}</option>
+        ${stores.map(s => `<option value="${esc(s.key)}">${esc(s.label)}</option>`).join("")}
+      `;
+      el.storeFilter.value = stores.some(s => s.key === current) ? current : "all";
+    }
+
+    function renderQuickGroups() {
+      el.groupQuickList.innerHTML = `
+        <button class="quick-pill ${el.groupFilter.value === "all" ? "active" : ""}" data-group-id="all">
+          ${esc(I18N[lang].allGroups)}
+        </button>
+        ${groups.map(g => `
+          <button class="quick-pill ${el.groupFilter.value === g.id ? "active" : ""}" data-group-id="${g.id}">
+            ${esc((g.icon ? g.icon + " " : "") + groupName(g, lang))}
+          </button>
+        `).join("")}
+      `;
+
+      el.groupQuickList.querySelectorAll("[data-group-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          el.groupFilter.value = btn.dataset.groupId;
+          renderQuickGroups();
+          renderDeals();
+        });
+      });
+    }
+
+    function getFilteredDeals() {
+      const q = (el.searchInput.value || "").trim().toLowerCase();
+      const gid = el.groupFilter.value || "all";
+      const storeKey = el.storeFilter.value || "all";
+      const sort = el.sortFilter.value || "new";
+
+      let rows = [...deals];
+
+      if (gid !== "all") rows = rows.filter(d => d.group_id === gid);
+      if (storeKey !== "all") rows = rows.filter(d => String(d.store || "").trim().toLowerCase() === storeKey);
+
+      if (q) {
+        rows = rows.filter(d => {
+          const gname = groupName(d.deal_group, lang);
+          const text = [
+            d.title_en, d.title_vi, d.short_desc_en, d.short_desc_vi,
+            d.description_en, d.description_vi, d.store, d.slug, gname
+          ].join(" ").toLowerCase();
+          return text.includes(q);
+        });
+      }
+
+      rows.sort((a, b) => {
+        if (sort === "discount") return discountPct(b) - discountPct(a);
+        if (sort === "low") return Number(a.new_price || 0) - Number(b.new_price || 0);
+        if (sort === "high") return Number(b.new_price || 0) - Number(a.new_price || 0);
+        if (sort === "popular") return Number(b.click_count || 0) - Number(a.click_count || 0);
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+
+      return rows;
+    }
+
+    function localized(d) {
+      return {
+        ...d,
+        title_t: lang === "vi" ? (d.title_vi || d.title_en || "") : (d.title_en || d.title_vi || ""),
+        short_t: lang === "vi" ? (d.short_desc_vi || d.short_desc_en || "") : (d.short_desc_en || d.short_desc_vi || ""),
+        desc_t: lang === "vi" ? (d.description_vi || d.description_en || "") : (d.description_en || d.description_vi || ""),
+      };
+    }
+
+    function bindTrackLinks(root) {
+      root.querySelectorAll("[data-track-link='1']").forEach(a => {
+        a.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const href = a.getAttribute("href");
+          const dealId = a.dataset.dealId;
+          const slug = a.dataset.slug;
+          const source = a.dataset.source || "web";
+          window.open(href, "_blank", "noopener,noreferrer");
+          trackClick({ dealId, slug, source, lang });
+        });
+      });
+    }
+
+    function bindReactionButtons(root) {
+      root.querySelectorAll("[data-react]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const dealId = btn.dataset.dealId;
+          const vote = Number(btn.dataset.vote || 1);
+          try {
+            const rs = await reactToDeal(dealId, vote);
+            const wrap = btn.closest(".reactions");
+            wrap.querySelector("[data-like-count]").textContent = rs.like_count || 0;
+            wrap.querySelector("[data-dislike-count]").textContent = rs.dislike_count || 0;
+            deals = deals.map(d => d.id === dealId ? { ...d, like_count: rs.like_count, dislike_count: rs.dislike_count } : d);
+          } catch (e) {
+            console.error(e);
+          }
+        });
+      });
+    }
+
+    function renderPopular() {
+      const top = [...deals]
+        .sort((a, b) => Number(b.click_count || 0) - Number(a.click_count || 0))
+        .slice(0, 8);
+
+      if (!top.length) {
+        el.popularList.innerHTML = `<div class="muted">No data</div>`;
+        return;
+      }
+
+      el.popularList.innerHTML = top.map(item => {
+        const d = localized(item);
+        return `
+          <div class="popular-item">
+            <a class="popular-img"
+               href="${esc(d.affiliate_url)}"
+               data-track-link="1"
+               data-deal-id="${esc(d.id)}"
+               data-slug="${esc(d.slug)}"
+               data-source="popular_image">
+              <img src="${esc(d.image_url || "")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
+            </a>
+            <div class="popular-info">
+              <a class="popular-name" href="deal.html?slug=${encodeURIComponent(d.slug)}">${esc(d.title_t)}</a>
+              <div class="popular-price">${compactPriceHtml(d)}</div>
+              <div class="popular-meta">👁 ${Number(d.click_count || 0)} • 👍 ${Number(d.like_count || 0)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      bindTrackLinks(el.popularList);
+    }
+
+    function renderDeals() {
+      const t = I18N[lang];
+      const rows = getFilteredDeals();
+      el.dealCount.textContent = t.count(rows.length);
+      renderQuickGroups();
+
+      if (!rows.length) {
+        el.dealGrid.innerHTML = `<div class="empty">${esc(t.noDeals)}</div>`;
+        return;
+      }
+
+      el.dealGrid.innerHTML = rows.map(item => {
+        const d = localized(item);
+        const pct = discountPct(d);
+        const g = d.deal_group;
+        const gLabel = groupName(g, lang);
+        const gIcon = g?.icon || "📁";
+        const showNew = isNewDeal(d);
+
+        return `
+          <article class="deal-card">
+            <div class="deal-thumb">
+              <div class="badges">
+                <span class="badge">${esc((d.badge || "HOT").toUpperCase())}</span>
+                ${pct ? `<span class="badge danger">-${pct}%</span>` : ""}
+                ${showNew ? `<span class="chip new">NEW</span>` : ""}
+                ${d.promo_icon && d.promo_icon !== "none" ? `<span class="chip">${esc(d.promo_icon)}</span>` : ""}
+              </div>
+
+              <a href="${esc(d.affiliate_url)}"
+                 data-track-link="1"
+                 data-deal-id="${esc(d.id)}"
+                 data-slug="${esc(d.slug)}"
+                 data-source="card_image">
+                <img src="${esc(d.image_url || "")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
+              </a>
+            </div>
+
+            <div class="deal-body">
+              <div class="deal-meta-top">${esc(d.store || "")} • ${esc(gIcon)} ${esc(gLabel)}</div>
+              <h3 class="deal-title">${esc(d.title_t)}</h3>
+              <p class="deal-desc">${esc(d.short_t || "")}</p>
+
+              <div class="deal-dates">
+                ${d.starts_at ? `<div class="date-row"><span>${esc(t.start)}:</span> ${esc(formatDate(d.starts_at, lang))}</div>` : ""}
+                ${d.expires_at ? `<div class="date-row expire"><span>${esc(t.expire)}:</span> ${esc(formatDate(d.expires_at, lang))}</div>` : ""}
+              </div>
+
+              ${priceRowHtml(d, t)}
+
+              <div class="reactions">
+                <button class="react-btn" data-react="1" data-vote="1" data-deal-id="${esc(d.id)}">👍 <span data-like-count>${Number(d.like_count || 0)}</span></button>
+                <button class="react-btn" data-react="1" data-vote="-1" data-deal-id="${esc(d.id)}">👎 <span data-dislike-count>${Number(d.dislike_count || 0)}</span></button>
+                <div class="react-btn static">👁 <span>${Number(d.click_count || 0)}</span></div>
+              </div>
+
+              <div class="deal-actions">
+                <a class="btn primary action-btn"
+                   href="${esc(d.affiliate_url)}"
+                   data-track-link="1"
+                   data-deal-id="${esc(d.id)}"
+                   data-slug="${esc(d.slug)}"
+                   data-source="card_cta">${esc(t.view)}</a>
+                <a class="btn action-btn" href="deal.html?slug=${encodeURIComponent(d.slug)}">${esc(t.detail)}</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      bindTrackLinks(el.dealGrid);
+      bindReactionButtons(el.dealGrid);
+    }
+
+
+    function closeAlertModal() {
+      el.alertModal.classList.add("hidden");
+      el.alertModal.setAttribute("aria-hidden", "true");
+    }
+    function openAlertModal() {
+      el.alertModal.classList.remove("hidden");
+      el.alertModal.setAttribute("aria-hidden", "false");
+      setTimeout(() => el.alertKeyword?.focus(), 10);
+    }
+    function saveAlertLocal(payload) {
+      let rows = [];
+      try { rows = JSON.parse(localStorage.getItem(LS_ALERTS) || "[]"); } catch { rows = []; }
+      rows.unshift(payload);
+      localStorage.setItem(LS_ALERTS, JSON.stringify(rows.slice(0, 500)));
+    }
+    async function saveAlertRequest(payload) {
+      try {
+        const { error } = await sb.from("deal_alerts").insert({
+          keyword: payload.keyword,
+          email: payload.email,
+          title: payload.keyword,
+          is_active: true
+        });
+        if (error) throw error;
+        return "db";
+      } catch (e) {
+        saveAlertLocal(payload);
+        return "local";
+      }
+    }
+
+    async function boot() {
+      try {
+        groups = await fetchGroups();
+        deals = await fetchDeals();
+        applyI18n();
+      } catch (e) {
+        console.error(e);
+        el.dealGrid.innerHTML = `<div class="empty">Load failed: ${esc(e.message || "Unknown error")}</div>`;
+      }
+    }
+
+    // Events
+    el.searchInput.addEventListener("input", renderDeals);
+    el.groupFilter.addEventListener("change", renderDeals);
+
+    el.storeFilter.addEventListener("change", renderDeals);
+
+    el.openAlertBtn.addEventListener("click", openAlertModal);
+    el.closeAlertBtn.addEventListener("click", closeAlertModal);
+    el.alertModal.querySelectorAll("[data-alert-close='1']").forEach(x => x.addEventListener("click", closeAlertModal));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !el.alertModal.classList.contains("hidden")) closeAlertModal();
+    });
+
+    el.alertForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const keyword = (el.alertKeyword.value || "").trim();
+      const email = (el.alertEmail.value || "").trim();
+      const t = I18N[lang];
+
+      if (!keyword || !email) {
+        el.alertStatus.textContent = t.alertNeedFields;
+        el.alertStatus.className = "status show err";
+        return;
+      }
+
+      try {
+        el.alertStatus.textContent = "Saving...";
+        el.alertStatus.className = "status show";
+
+        const resp = await fetch("/api/alerts/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, keyword }),
+        });
+
+        const data = await resp.json().catch(() => null);
+        if (!data || data.ok === false) {
+          const msg = data?.message || data?.detail || data?.error || "Subscribe failed";
+          throw new Error(msg);
+        }
+
+        // backend sẽ trả:
+        // - message: "Subscribe thành công!..."
+        // - hoặc "Bạn đã sub keyword này rồi."
+        el.alertStatus.textContent = data.message || "Saved ✅";
+        el.alertStatus.className = "status show ok";
+
+        el.alertForm.reset();
+        setTimeout(() => {
+          el.alertStatus.classList.remove("show");
+          closeAlertModal();
+        }, 1200);
+      } catch (err) {
+        el.alertStatus.textContent = err.message || "Subscribe failed";
+        el.alertStatus.className = "status show err";
+      }
+    });
+
+    if (el.footerYear) el.footerYear.textContent = new Date().getFullYear();
+
+    el.sortFilter.addEventListener("change", renderDeals);
+
+    el.langEnBtn.addEventListener("click", () => {
+      lang = "en"; setLang("en"); applyI18n();
+    });
+    el.langViBtn.addEventListener("click", () => {
+      lang = "vi"; setLang("vi"); applyI18n();
+    });
+
+    boot();
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Deal Manager</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo">AD</div>
+        <div>
+          <div class="brand-title">Admin Deal Manager</div>
+          <div class="brand-sub">Supabase • Groups • Deals • Dashboard</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="index.html">Home</a>
+        <button class="btn" id="emailCenterBtn" style="display:none;">Email Center</button>
+        <button class="btn red" id="logoutBtn" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-wrap">
+    <!-- LOGIN -->
+    <section id="loginBox" class="panel narrow">
+      <div class="panel-title-row"><h2>🔐 Admin Login</h2></div>
+      <p class="muted">Only users in <code>public.admins</code> can manage categories, stores, and deals.</p>
+
+      <form id="loginForm" class="form-grid">
+        <div class="field">
+          <label>Email</label>
+          <input id="loginEmail" type="email" required />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="loginPassword" type="password" required />
+        </div>
+        <button class="btn primary" type="submit">Login</button>
+        <div id="loginStatus" class="status"></div>
+      </form>
+    </section>
+
+    <!-- APP -->
+    <section id="appBox" style="display:none;">
+      <div class="notice">✅ Admin online. Bạn có thể thêm/sửa/xoá Group và Deal.</div>
+
+      <!-- DASHBOARD -->
+      <section class="panel mt12">
+        <div class="panel-title-row">
+          <h2>📊 Deal Dashboard</h2>
+          <div class="row-inline">
+            <select id="statsDays">
+              <option value="1">24h</option>
+              <option value="7">7 days</option>
+              <option value="30" selected>30 days</option>
+            </select>
+            <button class="btn" id="refreshStatsBtn" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div id="statsCards" class="stats-cards"></div>
+
+        <div class="panel mt12 chart-panel">
+          <div class="panel-title-row"><h2>Clicks by Day</h2></div>
+          <canvas id="clicksChart"></canvas>
+        </div>
+
+        <div class="stats-grid mt12">
+          <div class="panel">
+            <div class="panel-title-row"><h2>Top Deals</h2></div>
+            <div id="topDealsBox"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title-row"><h2>UTM Source</h2></div>
+            <div id="utmSourceBox"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title-row"><h2>UTM Campaign</h2></div>
+            <div id="utmCampaignBox"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title-row"><h2>Clicks by Source</h2></div>
+            <div id="sourceBox"></div>
+          </div>
+        </div>
+
+        <div id="statsStatus" class="status"></div>
+      </section>
+
+      <!-- GROUP MANAGER -->
+      <section class="panel mt12">
+        <div class="panel-title-row"><h2>🗂️ Manage Categories</h2></div>
+        <p class="muted">Create your category list here (health, computer, electric, apparel, beauty, apple, autos, costco, walmart, super hot deal...). These will appear in the Categories dropdown on the homepage.</p>
+
+        <form id="groupForm" class="form-grid">
+          <input type="hidden" id="groupEditId" />
+
+          <div class="grid-3">
+            <div class="field">
+              <label>Slug *</label>
+              <input id="groupSlug" placeholder="apple / walmart / super-hot-deal" />
+            </div>
+            <div class="field">
+              <label>Name EN *</label>
+              <input id="groupNameEn" placeholder="Apple" />
+            </div>
+            <div class="field">
+              <label>Name VI</label>
+              <input id="groupNameVi" placeholder="Apple / Siêu hot deal" />
+            </div>
+          </div>
+
+          <div class="grid-4">
+            <div class="field">
+              <label>Icon</label>
+              <input id="groupIcon" placeholder="🍎" />
+            </div>
+            <div class="field">
+              <label>Sort Order</label>
+              <input id="groupSort" type="number" value="100" />
+            </div>
+            <div class="field">
+              <label>Active</label>
+              <select id="groupActive">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="btn" type="button" id="groupGenSlugBtn">Auto Slug</button>
+            </div>
+          </div>
+
+          <div class="row-inline">
+            <button class="btn green" type="submit">Save Category</button>
+            <button class="btn" type="button" id="groupResetBtn">Reset</button>
+          </div>
+
+          <div id="groupStatus" class="status"></div>
+        </form>
+
+        <div id="groupList" class="stack-list mt12"></div>
+      </section>
+
+      <!-- STORE MANAGER -->
+      <section class="panel mt12">
+        <div class="panel-title-row"><h2>🏪 Manage Stores</h2></div>
+        <p class="muted">Add store options for the Store dropdown (Costco, Walmart, Amazon, Apple...). You can still type a custom store when adding a deal.</p>
+
+        <form id="storeForm" class="form-grid">
+          <input type="hidden" id="storeEditId" />
+
+          <div class="grid-4">
+            <div class="field">
+              <label>Store Slug *</label>
+              <input id="storeSlug" placeholder="costco / walmart / amazon" />
+            </div>
+            <div class="field">
+              <label>Store Name *</label>
+              <input id="storeName" placeholder="Costco" />
+            </div>
+            <div class="field">
+              <label>Icon</label>
+              <input id="storeIcon" placeholder="🏪" />
+            </div>
+            <div class="field">
+              <label>Sort Order</label>
+              <input id="storeSort" type="number" value="100" />
+            </div>
+          </div>
+
+          <div class="grid-4">
+            <div class="field">
+              <label>Active</label>
+              <select id="storeActive">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="btn" type="button" id="storeGenSlugBtn">Auto Slug</button>
+            </div>
+          </div>
+
+          <div class="row-inline">
+            <button class="btn green" type="submit">Save Store</button>
+            <button class="btn" type="button" id="storeResetBtn">Reset</button>
+          </div>
+
+          <div id="storeStatus" class="status"></div>
+        </form>
+
+        <div id="storeList" class="stack-list mt12"></div>
+      </section>
+
+      <!-- DEAL MANAGER -->
+      <section class="admin-split mt12">
+        <div class="panel">
+          <div class="panel-title-row"><h2>➕ Add / Edit Deal</h2></div>
+
+          <form id="dealForm" class="form-grid">
+            <input type="hidden" id="dealId" />
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Slug (SEO URL)</label>
+                <input id="dealSlug" placeholder="auto-from-title" />
+              </div>
+              <div class="field">
+                <label>&nbsp;</label>
+                <button class="btn" type="button" id="dealGenSlugBtn">Generate Slug</button>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Title EN *</label>
+                <input id="titleEn" required />
+              </div>
+              <div class="field">
+                <label>Short EN</label>
+                <input id="shortEn" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Description EN</label>
+              <textarea id="descEn"></textarea>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Title VI</label>
+                <input id="titleVi" />
+              </div>
+              <div class="field">
+                <label>Short VI</label>
+                <input id="shortVi" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Description VI</label>
+              <textarea id="descVi"></textarea>
+            </div>
+
+            <div class="grid-4">
+              <div class="field">
+                <label>Store Dropdown</label>
+                <select id="storeSelect"></select>
+              </div>
+              <div class="field">
+                <label>Store Name *</label>
+                <input id="store" required placeholder="Select store or type custom store" />
+              </div>
+              <div class="field">
+                <label>Category *</label>
+                <select id="groupId" required></select>
+              </div>
+              <div class="field">
+                <label>Badge</label>
+                <select id="badge">
+                  <option value="hot">HOT</option>
+                  <option value="flash">FLASH</option>
+                  <option value="coupon">COUPON</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="field">
+                <label>Old Price (optional)</label>
+                <input id="oldPrice" type="number" step="0.01" min="0" placeholder="Leave blank if none" />
+              </div>
+              <div class="field">
+                <label>New Price / Sale Price (optional)</label>
+                <input id="newPrice" type="number" step="0.01" min="0" placeholder="Leave blank if none" />
+              </div>
+              <div class="field">
+                <label>Coupon</label>
+                <input id="coupon" placeholder="SAVE10" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Affiliate URL *</label>
+              <input id="affiliateUrl" placeholder="https://..." required />
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Upload Image</label>
+                <input id="imageFile" type="file" accept="image/*" />
+              </div>
+              <div class="field">
+                <label>Or Image URL</label>
+                <input id="imageUrl" placeholder="https://..." />
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="field">
+                <label>Start Deal</label>
+                <input id="startsAt" type="datetime-local" />
+              </div>
+              <div class="field">
+                <label>Expire Deal</label>
+                <input id="expiresAt" type="datetime-local" />
+              </div>
+              <div class="field">
+                <label>Promo Icon</label>
+                <select id="promoIcon">
+                  <option value="none">None</option>
+                  <option value="🔥">🔥 Hot</option>
+                  <option value="⭐">⭐ Top</option>
+                  <option value="⚡">⚡ Flash</option>
+                  <option value="🎁">🎁 Gift</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Published</label>
+                <select id="published">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Preview</label>
+                <img id="imgPreview" class="img-preview" src="./no-image.svg" alt="preview">
+              </div>
+            </div>
+
+            <div class="row-inline">
+              <button class="btn green" type="submit">Save Deal</button>
+              <button class="btn" type="button" id="dealResetBtn">Reset</button>
+            </div>
+
+            <div id="dealStatus" class="status"></div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title-row">
+            <h2>📋 Deals</h2>
+            <input id="dealListSearch" type="text" placeholder="Search deal list..." class="mini-search">
+          </div>
+          <div id="dealList" class="stack-list"></div>
+        </div>
+      </section>
+
+      <!-- EMAIL CENTER -->
+      <section class="panel" id="emailCenterPanel" style="display:none;">
+        <div class="panel-head">
+          <h2>📧 Email Center</h2>
+          <div class="row gap8">
+            <input id="emailSearch" class="input" placeholder="Search email..." style="min-width:240px;">
+            <button class="btn primary" id="sendAllBtn" type="button">Send All</button>
+            <button class="btn" id="refreshEmailsBtn" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div class="muted" style="margin-top:8px;">
+          Unique subscriber emails (verified + active). Send to one person or broadcast to all.
+        </div>
+
+        <div id="emailList" class="table-wrap" style="margin-top:12px;"></div>
+        <div id="emailStatus" class="status" style="margin-top:10px;"></div>
+      </section>
+
+      <!-- Email Compose Modal -->
+      <div class="modal" id="emailModal" style="display:none;">
+        <div class="modal-card" style="max-width:720px;">
+          <div class="modal-head">
+            <h3 id="emailModalTitle">Send Email</h3>
+            <button class="btn" id="emailModalClose" type="button">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="grid2">
+              <div>
+                <label class="label">To</label>
+                <input class="input" id="emailTo" disabled>
+              </div>
+              <div>
+                <label class="label">Subject</label>
+                <input class="input" id="emailSubject" placeholder="Subject">
+              </div>
+            </div>
+
+            <label class="label" style="margin-top:10px;">Message (HTML allowed)</label>
+            <textarea class="textarea" id="emailBody" rows="8" placeholder="Write your message..."></textarea>
+
+            <label class="label" style="margin-top:10px;">Optional picture</label>
+            <div class="row gap10">
+              <input type="file" id="emailImageFile" accept="image/*" />
+              <button class="btn" id="emailImageClear" type="button">Clear</button>
+              <span class="muted" id="emailImageStatus">No image</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">
+              Image uploads to Supabase Storage bucket <b>deal-images</b> and will be embedded in the email.
+            </div>
+          </div>
+          <div class="modal-foot">
+            <button class="btn" id="emailSendCancel" type="button">Cancel</button>
+            <button class="btn primary" id="emailSendConfirm" type="button">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="footer-title">Andy Deal Hub Admin</div>
+        <div class="footer-sub">Categories • Stores • Deals</div>
+      </div>
+      <div class="footer-meta">
+        <span>© <span id="footerYear"></span> Andy Deal Hub</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    // ==========================================
+    // Admin Deal Manager (FULL, FIXED REWRITE)
+    // - Keeps all features from your uploaded file
+    // - Fixes Email Center duplicate code + ReferenceErrors
+    // ==========================================
+
+    const sb = window.sb;
+    const LS_STORE_CATALOG = "deal_store_catalog_v1";
+
+    // ===== Helpers =====
+    function esc(s){
+      return String(s??"")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    function toast(msg, ok=true){
+      let box = document.getElementById("toastBox");
+      if(!box){
+        box = document.createElement("div");
+        box.id = "toastBox";
+        box.style.position = "fixed";
+        box.style.right = "14px";
+        box.style.bottom = "14px";
+        box.style.zIndex = "99999";
+        box.style.display = "grid";
+        box.style.gap = "8px";
+        document.body.appendChild(box);
+      }
+      const item = document.createElement("div");
+      item.textContent = msg || "";
+      item.style.padding = "10px 12px";
+      item.style.borderRadius = "12px";
+      item.style.background = ok ? "rgba(16,185,129,.95)" : "rgba(239,68,68,.95)";
+      item.style.color = "#fff";
+      item.style.boxShadow = "0 10px 22px rgba(0,0,0,.25)";
+      item.style.maxWidth = "420px";
+      box.appendChild(item);
+      setTimeout(()=>{ item.style.opacity = "0"; item.style.transition="opacity .3s"; }, 2600);
+      setTimeout(()=>{ item.remove(); }, 3000);
+    }
+
+    function showStatus(el,msg,ok=true){
+      if(!el) return;
+      el.textContent = msg;
+      el.className = "status show " + (ok ? "ok":"err");
+      setTimeout(()=>el.classList.remove("show"), 2600);
+    }
+
+    function slugify(s){
+      return String(s||"").toLowerCase().trim()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/^-+|-+$/g,"");
+    }
+
+    function hasPrice(v){
+      if(v === null || v === undefined) return false;
+      const s = String(v).trim();
+      if(!s) return false;
+      const n = Number(s);
+      return Number.isFinite(n) && n >= 0;
+    }
+
+    function money(v){
+      if(!hasPrice(v)) return "";
+      return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(v));
+    }
+
+    function moneyOrDash(v){
+      return hasPrice(v) ? money(v) : "—";
+    }
+
+    function numOrNull(v){
+      const s = String(v ?? "").trim();
+      if(!s) return null;
+      const n = Number(s);
+      if(!Number.isFinite(n) || n < 0) throw new Error("Price must be a valid number ≥ 0");
+      return Number(n.toFixed(2));
+    }
+
+    function dtInputValue(iso){
+      if(!iso) return "";
+      const d = new Date(iso);
+      if(Number.isNaN(d.getTime())) return "";
+      const pad = n => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function toIso(v){ return v ? new Date(v).toISOString() : null; }
+
+    function dealSaveErrorMessage(err){
+      const msg = String(err?.message || err?.details || err || "");
+      const low = msg.toLowerCase();
+      if (
+        (low.includes('old_price') && low.includes('not-null')) ||
+        (low.includes('new_price') && low.includes('not-null')) ||
+        low.includes('null value in column "old_price"') ||
+        low.includes('null value in column "new_price"')
+      ) {
+        return 'DB schema is still forcing old/new price. Run the SQL fix to drop NOT NULL on deals.old_price and deals.new_price, then these fields will be optional.';
+      }
+      if (
+        (low.includes('null value in column "title"') || (low.includes('title') && low.includes('not-null'))) &&
+        !low.includes('title_en')
+      ) {
+        return 'Your DB still requires legacy deals.title. This admin.html copies Title EN/VI into deals.title automatically. Please replace admin.html and save again.';
+      }
+      return err?.message || 'Save deal failed';
+    }
+
+    function discountPct(d){
+      if(!hasPrice(d.old_price) || !hasPrice(d.new_price)) return 0;
+      const oldP=Number(d.old_price), newP=Number(d.new_price);
+      if(!oldP || newP>oldP) return 0;
+      return Math.round(((oldP-newP)/oldP)*100);
+    }
+    // ===== Stores (DB) =====
+    async function fetchStores(admin=true){
+      let q = sb.from("deal_stores")
+        .select("*")
+        .order("sort_order",{ascending:true})
+        .order("name",{ascending:true});
+      if(!admin) q = q.eq("is_active", true);
+      const { data, error } = await q;
+      if(error) throw error;
+      return data || [];
+    }
+
+    async function saveStore(payload){
+      const row = {
+        id: payload.id || undefined,
+        slug: slugify(payload.slug || payload.name),
+        name: String(payload.name || "").trim(),
+        icon: String(payload.icon || "").trim() || null,
+        sort_order: Number(payload.sort_order || 100),
+        is_active: !!payload.is_active,
+      };
+      if(!row.slug) throw new Error("Store slug required");
+      if(!row.name) throw new Error("Store name required");
+
+      const { error } = await sb.from("deal_stores").upsert(row);
+      if(error) throw error;
+      return true;
+    }
+
+    async function deleteStore(id){
+      const { error } = await sb.from("deal_stores").delete().eq("id", id);
+      if(error) throw error;
+      return true;
+    }
+
+    function sortStoreCatalog(rows){
+      return [...rows].sort((a,b) =>
+        (Number(a.sort_order||100)-Number(b.sort_order||100)) ||
+        String(a.name||"").localeCompare(String(b.name||""))
+      );
+    }
+
+    function adminPriceSummary(d){
+      const parts = [];
+      if (hasPrice(d.new_price)) parts.push(money(d.new_price));
+      if (hasPrice(d.old_price)) parts.push(`<span class="line-through">${money(d.old_price)}</span>`);
+      if (!parts.length) parts.push(`<span class="price-note">No price</span>`);
+      const pct = discountPct(d);
+      if (pct) parts.push(`-${pct}%`);
+      return parts.join(" ");
+    }
+
+    // ===== DOM =====
+    const $ = (id) => document.getElementById(id);
+
+    const loginBox = $("loginBox"), appBox = $("appBox"), logoutBtn = $("logoutBtn");
+    const loginForm = $("loginForm"), loginStatus = $("loginStatus");
+    const groupForm = $("groupForm"), groupStatus = $("groupStatus"), groupList = $("groupList");
+    const storeForm = $("storeForm"), storeStatus = $("storeStatus"), storeList = $("storeList");
+    const dealForm = $("dealForm"), dealStatus = $("dealStatus"), dealList = $("dealList");
+    const footerYear = $("footerYear");
+
+    // Dashboard
+    const statsDays = $("statsDays");
+    const refreshStatsBtn = $("refreshStatsBtn");
+    const statsCards = $("statsCards");
+    const statsStatus = $("statsStatus");
+    const clicksChart = $("clicksChart");
+
+    // Email Center
+    const emailCenterBtn = $("emailCenterBtn");
+    const emailCenterPanel = $("emailCenterPanel");
+    const emailList = $("emailList");
+    const emailSearch = $("emailSearch");
+    const refreshEmailsBtn = $("refreshEmailsBtn");
+    const sendAllBtn = $("sendAllBtn");
+    const emailStatus = $("emailStatus");
+
+    const emailModal = $("emailModal");
+    const emailModalTitle = $("emailModalTitle");
+    const emailModalClose = $("emailModalClose");
+    const emailSendCancel = $("emailSendCancel");
+    const emailSendConfirm = $("emailSendConfirm");
+    const emailTo = $("emailTo");
+    const emailSubject = $("emailSubject");
+    const emailBody = $("emailBody");
+    const emailImageFile = $("emailImageFile");
+    const emailImageClear = $("emailImageClear");
+    const emailImageStatus = $("emailImageStatus");
+
+    let currentUser = null;
+    let groups = [];
+    let storeCatalog = [];
+    let deals = [];
+    let clickLogs = [];
+    let chart = null;
+
+    // Email cache
+    let emailCenterCache = [];
+    let composeTarget = { mode: "single", emails: [] };
+
+    // ===== Auth =====
+    async function getSessionUser(){
+      const { data, error } = await sb.auth.getSession();
+      if(error) throw error;
+      return data.session?.user || null;
+    }
+
+    async function getAccessToken(){
+      const { data, error } = await sb.auth.getSession();
+      if(error) throw error;
+      return data?.session?.access_token || null;
+    }
+
+    async function signIn(email,password){
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if(error) throw error;
+    }
+
+    async function signOut(){
+      const { error } = await sb.auth.signOut();
+      if(error) throw error;
+    }
+
+    async function isAdmin(uid){
+      const { data, error } = await sb.from("admins").select("user_id").eq("user_id", uid).maybeSingle();
+      if(error) throw error;
+      return !!data;
+    }
+
+    // ===== API =====
+    async function fetchGroups(admin=true){
+      let q = sb.from("deal_groups")
+        .select("*")
+        .order("sort_order",{ascending:true})
+        .order("name_en",{ascending:true});
+      if(!admin) q = q.eq("is_active", true);
+      const { data, error } = await q;
+      if(error) throw error;
+      return data || [];
+    }
+
+    async function saveGroup(payload){
+      const row = {
+        id: payload.id || undefined,
+        slug: slugify(payload.slug),
+        name_en: String(payload.name_en||"").trim(),
+        name_vi: String(payload.name_vi||"").trim() || null,
+        icon: String(payload.icon||"").trim() || null,
+        sort_order: Number(payload.sort_order || 100),
+        is_active: !!payload.is_active,
+      };
+      if(!row.slug) throw new Error("Group slug required");
+      if(!row.name_en) throw new Error("Group name EN required");
+
+      const { error } = await sb.from("deal_groups").upsert(row);
+      if(error) throw error;
+      return true;
+    }
+
+    async function deleteGroup(id){
+      const { error } = await sb.from("deal_groups").delete().eq("id", id);
+      if(error) throw error;
+      return true;
+    }
+
+    async function uploadImage(file){
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `deals/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await sb.storage.from("deal-images").upload(path, file, { upsert: false });
+      if(upErr) throw upErr;
+      const { data } = sb.storage.from("deal-images").getPublicUrl(path);
+      return data.publicUrl;
+    }
+
+    async function saveDeal(payload){
+      const fallbackTitle = (payload.title_en || payload.title_vi || "").trim() || null;
+      const fallbackShort = (payload.short_desc_en || payload.short_desc_vi || "").trim() || null;
+      const fallbackDesc = (payload.description_en || payload.description_vi || "").trim() || null;
+
+      const row = {
+        id: payload.id || undefined,
+        slug: slugify(payload.slug || payload.title_en || payload.title_vi),
+
+        // New bilingual columns
+        title_en: payload.title_en || null,
+        short_desc_en: payload.short_desc_en || null,
+        description_en: payload.description_en || null,
+        title_vi: payload.title_vi || null,
+        short_desc_vi: payload.short_desc_vi || null,
+        description_vi: payload.description_vi || null,
+
+        // Legacy compatibility columns
+        title: fallbackTitle,
+        short_desc: fallbackShort,
+        description: fallbackDesc,
+
+        store: payload.store || null,
+        group_id: payload.group_id || null,
+        badge: payload.badge || "hot",
+        coupon: payload.coupon || null,
+        old_price: numOrNull(payload.old_price),
+        new_price: numOrNull(payload.new_price),
+        affiliate_url: payload.affiliate_url || null,
+        image_url: payload.image_url || null,
+        starts_at: payload.starts_at || null,
+        expires_at: payload.expires_at || null,
+        promo_icon: payload.promo_icon || "none",
+        published: !!payload.published,
+      };
+
+      if(!row.title_en) throw new Error("Title EN required");
+      if(!row.store) throw new Error("Store required");
+      if(!row.group_id) throw new Error("Deal group required");
+      if(!row.affiliate_url) throw new Error("Affiliate URL required");
+      if(!row.slug) throw new Error("Slug required");
+
+      const { error } = await sb.from("deals").upsert(row);
+      if(error) throw error;
+      return true;
+    }
+
+    async function deleteDeal(id){
+      const { error } = await sb.from("deals").delete().eq("id", id);
+      if(error) throw error;
+      return true;
+    }
+
+    async function fetchDeals() {
+      const { data, error } = await sb
+        .from("deals")
+        .select(`*, deal_group:group_id(id,slug,name_en,name_vi,icon)`)
+        .order("created_at", { ascending: false });
+      if(error) throw error;
+      return data || [];
+    }
+
+    async function fetchClicks(days=30){
+      const from = new Date(Date.now() - days*24*3600*1000).toISOString();
+      const { data, error } = await sb
+        .from("deal_clicks")
+        .select("id,deal_id,slug,source,lang,page_path,created_at")
+        .gte("created_at", from)
+        .order("created_at", { ascending: true })
+        .limit(5000);
+      if(error) throw error;
+      return data || [];
+    }
+
+    // ===== Render groups =====
+    function renderGroupOptions() {
+      const active = groups.filter(g => g.is_active);
+      $("groupId").innerHTML = active.map(g => `
+        <option value="${g.id}">${esc((g.icon ? g.icon + " " : "") + (g.name_en || g.slug))}</option>
+      `).join("");
+    }
+
+    function resetGroupForm(){
+      groupForm.reset();
+      $("groupEditId").value = "";
+      $("groupSort").value = 100;
+      $("groupActive").value = "true";
+    }
+
+    function fillGroupForm(g){
+      $("groupEditId").value = g.id;
+      $("groupSlug").value = g.slug || "";
+      $("groupNameEn").value = g.name_en || "";
+      $("groupNameVi").value = g.name_vi || "";
+      $("groupIcon").value = g.icon || "";
+      $("groupSort").value = g.sort_order ?? 100;
+      $("groupActive").value = g.is_active ? "true" : "false";
+      window.scrollTo({top: 0, behavior:"smooth"});
+    }
+
+    function renderGroupList(){
+      groupList.innerHTML = groups.map(g => `
+        <div class="stack-item no-thumb">
+          <div class="stack-main">
+            <div class="stack-title">${esc(g.icon || "📁")} ${esc(g.name_en || "")}${g.name_vi ? ` / ${esc(g.name_vi)}` : ""}</div>
+            <div class="stack-meta">slug: ${esc(g.slug)} • sort: ${g.sort_order} • ${g.is_active ? "Active":"Inactive"}</div>
+          </div>
+          <div class="stack-actions">
+            <button class="btn mini-btn" data-group-edit="${g.id}">Edit</button>
+            <button class="btn mini-btn red" data-group-del="${g.id}">Delete</button>
+          </div>
+        </div>
+      `).join("");
+
+      groupList.querySelectorAll("[data-group-edit]").forEach(btn=>{
+        btn.addEventListener("click", ()=> {
+          const g = groups.find(x=>x.id===btn.dataset.groupEdit);
+          if(g) fillGroupForm(g);
+        });
+      });
+
+      groupList.querySelectorAll("[data-group-del]").forEach(btn=>{
+        btn.addEventListener("click", async ()=> {
+          const g = groups.find(x=>x.id===btn.dataset.groupDel);
+          if(!g) return;
+          if(!confirm(`Delete category "${g.name_en}"?`)) return;
+          try{
+            await deleteGroup(g.id);
+            await reloadAll();
+            showStatus(groupStatus, "Deleted category.", true);
+          }catch(e){
+            showStatus(groupStatus, e.message || "Delete category failed", false);
+          }
+        });
+      });
+    }
+
+    // ===== Render stores (local catalog) =====
+    function renderStoreOptions() {
+      const current = $("storeSelect").value || "";
+      const active = sortStoreCatalog(storeCatalog.filter(s => s.is_active));
+      $("storeSelect").innerHTML = `
+        <option value="">(Select store)</option>
+        ${active.map(s => `<option value="${s.id}">${esc((s.icon ? s.icon + " " : "") + s.name)}</option>`).join("")}
+      `;
+      $("storeSelect").value = active.some(s => s.id === current) ? current : "";
+    }
+
+    function resetStoreForm() {
+      storeForm.reset();
+      $("storeEditId").value = "";
+      $("storeSort").value = 100;
+      $("storeActive").value = "true";
+    }
+
+    function fillStoreForm(s) {
+      $("storeEditId").value = s.id;
+      $("storeSlug").value = s.slug || "";
+      $("storeName").value = s.name || "";
+      $("storeIcon").value = s.icon || "";
+      $("storeSort").value = s.sort_order ?? 100;
+      $("storeActive").value = s.is_active ? "true" : "false";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderStoreList() {
+      const rows = sortStoreCatalog(storeCatalog);
+      storeList.innerHTML = rows.map(s => `
+        <div class="stack-item no-thumb">
+          <div class="stack-main">
+            <div class="stack-title">${esc(s.icon || "🏪")} ${esc(s.name)}</div>
+            <div class="stack-meta">slug: ${esc(s.slug)} • sort: ${Number(s.sort_order || 100)} • ${s.is_active ? "Active" : "Inactive"}</div>
+          </div>
+          <div class="stack-actions">
+            <button class="btn mini-btn" data-store-edit="${esc(s.id)}">Edit</button>
+            <button class="btn mini-btn red" data-store-del="${esc(s.id)}">Delete</button>
+          </div>
+        </div>
+      `).join("") || `<div class="muted">No store options yet.</div>`;
+
+      storeList.querySelectorAll("[data-store-edit]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const s = storeCatalog.find(x => x.id === btn.dataset.storeEdit);
+          if (s) fillStoreForm(s);
+        });
+      });
+
+      storeList.querySelectorAll("[data-store-del]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const s = storeCatalog.find(x => x.id === btn.dataset.storeDel);
+          if (!s) return;
+          if (!confirm(`Delete store "${s.name}"?`)) return;
+          await deleteStore(s.id);
+          await reloadAll();
+          showStatus(storeStatus, "Deleted store.", true);
+        });
+      });
+    }
+
+    async function saveStoreCatalogRow(payload) {
+      await saveStore(payload);
+      return true;
+    }
+
+    // ===== Render deals =====
+    function resetDealForm() {
+      dealForm.reset();
+      $("dealId").value = "";
+      $("published").value = "true";
+      $("promoIcon").value = "none";
+      $("storeSelect").value = "";
+      $("imgPreview").src = "./no-image.svg";
+    }
+
+    function fillDealForm(d){
+      $("dealId").value = d.id || "";
+      $("dealSlug").value = d.slug || "";
+      $("titleEn").value = d.title_en || "";
+      $("shortEn").value = d.short_desc_en || "";
+      $("descEn").value = d.description_en || "";
+      $("titleVi").value = d.title_vi || "";
+      $("shortVi").value = d.short_desc_vi || "";
+      $("descVi").value = d.description_vi || "";
+      $("store").value = d.store || "";
+
+      const storeMatch = storeCatalog.find(s => String(s.name || "").toLowerCase() === String(d.store || "").trim().toLowerCase());
+      $("storeSelect").value = storeMatch ? storeMatch.id : "";
+
+      $("groupId").value = d.group_id || "";
+      $("badge").value = d.badge || "hot";
+      $("coupon").value = d.coupon || "";
+      $("oldPrice").value = d.old_price ?? "";
+      $("newPrice").value = d.new_price ?? "";
+      $("affiliateUrl").value = d.affiliate_url || "";
+      $("imageUrl").value = d.image_url || "";
+      $("startsAt").value = dtInputValue(d.starts_at);
+      $("expiresAt").value = dtInputValue(d.expires_at);
+      $("promoIcon").value = d.promo_icon || "none";
+      $("published").value = d.published ? "true" : "false";
+      $("imgPreview").src = d.image_url || "./no-image.svg";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderDealList() {
+      const q = ($("dealListSearch").value || "").trim().toLowerCase();
+      const rows = deals.filter(d => {
+        if (!q) return true;
+        const text = [
+          d.title_en, d.title_vi, d.slug, d.store, d.deal_group?.name_en, d.deal_group?.name_vi
+        ].join(" ").toLowerCase();
+        return text.includes(q);
+      });
+
+      dealList.innerHTML = rows.map(d => {
+        const imgSrc = d.image_url ? esc(d.image_url) : "./no-image.svg";
+        return `
+          <div class="stack-item">
+            <img class="stack-thumb" src="${imgSrc}" alt="" onerror="this.src='./no-image.svg'">
+            <div class="stack-main">
+              <div class="stack-title">${esc(d.title_en || d.title_vi || "(no title)")}</div>
+              <div class="stack-meta">
+                ${esc(d.store || "-")} • ${esc(d.deal_group?.icon || "📁")} ${esc(d.deal_group?.name_en || d.deal_group?.slug || "No group")}
+                • ${adminPriceSummary(d)}
+              </div>
+              <div class="stack-meta">slug: ${esc(d.slug)} • 👁 ${Number(d.click_count||0)} • 👍 ${Number(d.like_count||0)} • 👎 ${Number(d.dislike_count||0)}</div>
+            </div>
+            <div class="stack-actions">
+              <button class="btn mini-btn" data-deal-edit="${d.id}">Edit</button>
+              <a class="btn mini-btn" href="deal.html?slug=${encodeURIComponent(d.slug)}" target="_blank" rel="noopener">Detail</a>
+              <button class="btn mini-btn red" data-deal-del="${d.id}">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      dealList.querySelectorAll("[data-deal-edit]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const d = deals.find(x=>x.id===btn.dataset.dealEdit);
+          if(d) fillDealForm(d);
+        });
+      });
+
+      dealList.querySelectorAll("[data-deal-del]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const d = deals.find(x=>x.id===btn.dataset.dealDel);
+          if(!d) return;
+          if(!confirm(`Delete deal "${d.title_en || d.slug}"?`)) return;
+          try{
+            await deleteDeal(d.id);
+            await reloadAll();
+            showStatus(dealStatus, "Deleted deal.", true);
+          }catch(e){
+            showStatus(dealStatus, e.message || "Delete deal failed", false);
+          }
+        });
+      });
+    }
+
+    // ===== Dashboard =====
+    function renderBars(container, rows) {
+      if (!rows.length) {
+        container.innerHTML = `<div class="muted">No data</div>`;
+        return;
+      }
+      const max = Math.max(...rows.map(x => x.value), 1);
+      container.innerHTML = rows.map(r => `
+        <div class="bar-row">
+          <div class="bar-head"><span>${esc(r.label)}</span><b>${r.value}</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4, Math.round(r.value/max*100))}%"></div></div>
+        </div>
+      `).join("");
+    }
+
+    function renderStats() {
+      const days = Number(statsDays?.value || 30);
+      const fromTs = Date.now() - days*24*3600*1000;
+      const logs = clickLogs.filter(c => new Date(c.created_at).getTime() >= fromTs);
+
+      const totalDeals = deals.length;
+      const pubDeals = deals.filter(d => d.published).length;
+      const totalClicksAll = deals.reduce((s,d)=>s+Number(d.click_count||0),0);
+      const totalLikes = deals.reduce((s,d)=>s+Number(d.like_count||0),0);
+      const totalDislikes = deals.reduce((s,d)=>s+Number(d.dislike_count||0),0);
+
+      statsCards.innerHTML = `
+        <div class="stat-card"><div class="k">Deals</div><div class="v">${totalDeals}</div><div class="m">${pubDeals} published</div></div>
+        <div class="stat-card"><div class="k">Clicks (${days}d)</div><div class="v">${logs.length}</div><div class="m">From click logs</div></div>
+        <div class="stat-card"><div class="k">All-time Clicks</div><div class="v">${totalClicksAll}</div><div class="m">deals.click_count</div></div>
+        <div class="stat-card"><div class="k">Likes / Dislikes</div><div class="v">${totalLikes} / ${totalDislikes}</div><div class="m">All deals</div></div>
+      `;
+
+      const byDay = new Map();
+      for (const c of logs) {
+        const key = new Date(c.created_at).toISOString().slice(0,10);
+        byDay.set(key, (byDay.get(key)||0)+1);
+      }
+      const labels = [...byDay.keys()].sort();
+      const values = labels.map(k => byDay.get(k));
+
+      if (chart) chart.destroy();
+      chart = new Chart(clicksChart.getContext("2d"), {
+        type: "line",
+        data: { labels, datasets: [{ label: "Clicks", data: values, borderWidth: 2, tension: .25 }] },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      const dealMap = new Map();
+      for (const c of logs) {
+        const k = c.deal_id || c.slug || "unknown";
+        dealMap.set(k, (dealMap.get(k)||0)+1);
+      }
+      const topDeals = [...dealMap.entries()]
+        .map(([k,v]) => {
+          const d = deals.find(x => x.id===k || x.slug===k);
+          return { label: d ? (d.title_en || d.slug) : k, value: v };
+        })
+        .sort((a,b)=>b.value-a.value)
+        .slice(0,10);
+
+      const utmSource = new Map();
+      const utmCampaign = new Map();
+      for (const [k, v] of dealMap.entries()) {
+        const d = deals.find(x => x.id===k || x.slug===k);
+        if (!d?.affiliate_url) continue;
+        try {
+          const u = new URL(d.affiliate_url);
+          const s = u.searchParams.get("utm_source") || "(none)";
+          const c = u.searchParams.get("utm_campaign") || "(none)";
+          utmSource.set(s, (utmSource.get(s)||0)+v);
+          utmCampaign.set(c, (utmCampaign.get(c)||0)+v);
+        } catch {}
+      }
+
+      const sourceMap = new Map();
+      for (const c of logs) sourceMap.set(c.source || "(none)", (sourceMap.get(c.source||"(none)")||0)+1);
+
+      renderBars($("topDealsBox"), topDeals);
+      renderBars($("utmSourceBox"), [...utmSource.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value));
+      renderBars($("utmCampaignBox"), [...utmCampaign.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value));
+      renderBars($("sourceBox"), [...sourceMap.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value));
+    }
+
+    // ===== Load all =====
+    async function reloadAll() {
+      groups = await fetchGroups(true);
+      storeCatalog = readStoreCatalogLocal();
+      deals = await fetchDeals();
+      const days = Number(statsDays?.value || 30);
+      clickLogs = await fetchClicks(Math.max(30, days)); // keep 30d base so stats switch stays instant
+      renderGroupOptions();
+      renderStoreOptions();
+      renderGroupList();
+      renderStoreList();
+      renderDealList();
+      renderStats();
+    }
+
+    // =========================
+    // Email Center (Admin)
+    // =========================
+    function setEmailCenterVisible(isLoggedIn){
+      if (!emailCenterBtn || !emailCenterPanel) return;
+      emailCenterBtn.style.display = isLoggedIn ? "inline-flex" : "none";
+      if (!isLoggedIn) emailCenterPanel.style.display = "none";
+    }
+
+    function showEmailModal(){ emailModal.style.display = "flex"; }
+    function hideEmailModal(){
+      emailModal.style.display = "none";
+      emailTo.value = "";
+      emailSubject.value = "";
+      emailBody.value = "";
+      emailImageFile.value = "";
+      emailImageStatus.textContent = "No image";
+    }
+
+    async function adminFetchJSON(path, opts = {}) {
+      const token = await getAccessToken().catch(()=>null);
+      const headers = { "Content-Type": "application/json", ...(opts.headers || {}) };
+      if (token && !headers.Authorization) headers.Authorization = "Bearer " + token;
+
+      const res = await fetch(path, { ...opts, headers });
+      const txt = await res.text();
+      let data = null;
+      try { data = txt ? JSON.parse(txt) : null; } catch (_) {}
+      if (!res.ok) throw new Error((data && (data.detail || data.message || data.error)) || txt || `HTTP ${res.status}`);
+      return data;
+    }
+
+    function renderEmailList(items) {
+      const q = (emailSearch?.value || "").trim().toLowerCase();
+      const rows = (items || []).filter(e => !q || String(e.email||"").toLowerCase().includes(q));
+
+      if (!rows.length) {
+        emailList.innerHTML = `<div class="empty">No subscribers</div>`;
+        return;
+      }
+
+      emailList.innerHTML = `
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width:60px;">#</th>
+              <th>Email</th>
+              <th style="width:180px;">Subscribed</th>
+              <th style="width:220px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((r,i)=>`
+              <tr>
+                <td>${i+1}</td>
+                <td><b>${esc(r.email)}</b></td>
+                <td class="muted">${esc(r.last_subscribed_at || "")}</td>
+                <td><div style="display:flex; gap:8px; align-items:center;"><button class="btn primary" type="button" data-email-send="${esc(r.email)}">Send</button><button class="btn red" type="button" data-email-del="${esc(r.email)}">Delete</button></div></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+
+      emailList.querySelectorAll("[data-email-send]").forEach(btn => {
+        btn.addEventListener("click", () => openComposeSingle(btn.dataset.emailSend));
+      });
+
+      emailList.querySelectorAll("[data-email-del]").forEach(btn => {
+        btn.addEventListener("click", () => deleteSubscriber(btn.dataset.emailDel));
+      });
+    }
+
+    
+    async function deleteSubscriber(email){
+      if(!email) return;
+      if(!confirm(`Delete subscriber: ${email} ?`)) return;
+
+      try{
+        showStatus(emailStatus, "Deleting...", true);
+
+        // Backend endpoint expected:
+        // POST /api/alerts/admin/subscribers/delete  { email: "user@example.com" }
+        const rs = await adminFetchJSON("/api/alerts/admin/subscribers/delete", {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        });
+
+        // Remove locally and re-render
+        emailCenterCache = emailCenterCache.filter(x => String(x.email||"").toLowerCase() !== String(email).toLowerCase());
+        renderEmailList(emailCenterCache);
+
+        showStatus(emailStatus, rs?.message || `Deleted ${email} ✅`, true);
+      }catch(e){
+        // If your backend does not have the delete route yet, you'll see HTTP 404 here.
+        showStatus(emailStatus, e.message || "Delete failed", false);
+      }
+    }
+
+async function loadSubscribers() {
+      showStatus(emailStatus, "Loading subscribers...", true);
+      const rs = await adminFetchJSON("/api/alerts/admin/subscribers", { method: "GET" });
+      emailCenterCache = rs.items || [];
+      renderEmailList(emailCenterCache);
+      showStatus(emailStatus, `Loaded ${emailCenterCache.length} emails ✅`, true);
+    }
+
+    function openComposeSingle(email) {
+      composeTarget = { mode:"single", emails:[email] };
+      emailModalTitle.textContent = `Send Email → ${email}`;
+      emailTo.value = email;
+      showEmailModal();
+    }
+
+    function openComposeAll() {
+      composeTarget = { mode:"broadcast", emails: emailCenterCache.map(x=>x.email) };
+      emailModalTitle.textContent = `Send Email → ALL (${composeTarget.emails.length})`;
+      emailTo.value = `ALL (${composeTarget.emails.length})`;
+      showEmailModal();
+    }
+
+    async function uploadEmailImageIfAny() {
+      const file = emailImageFile?.files?.[0];
+      if (!file) return null;
+
+      // light limit to avoid huge upload
+      if (file.size > 4 * 1024 * 1024) throw new Error("Image too large. Please upload <= 4MB.");
+
+      const safeName = String(file.name || "image").replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `email/${Date.now()}_${safeName}`;
+
+      const { error: upErr } = await sb.storage.from("deal-images").upload(path, file, {
+        cacheControl: "3600",
+        upsert: true,
+        contentType: file.type || "image/png",
+      });
+      if (upErr) throw upErr;
+
+      const { data } = sb.storage.from("deal-images").getPublicUrl(path);
+      return data?.publicUrl || null;
+    }
+
+    async function sendAdminEmail() {
+      const subject = (emailSubject.value || "").trim();
+      const body = (emailBody.value || "").trim();
+      if (!subject || !body) throw new Error("Please enter subject and message.");
+
+      if (!composeTarget?.emails?.length) throw new Error("No recipient emails found.");
+
+      emailSendConfirm.disabled = true;
+      emailSendConfirm.textContent = "Sending...";
+
+      try {
+        const imgUrl = await uploadEmailImageIfAny();
+        const payload = { emails: composeTarget.emails, subject, html: body, image_url: imgUrl };
+
+        const rs = await adminFetchJSON("/api/alerts/admin/email/broadcast", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        toast(rs?.message || "Sent ✅", true);
+        hideEmailModal();
+      } finally {
+        emailSendConfirm.disabled = false;
+        emailSendConfirm.textContent = "Send";
+      }
+    }
+
+    // ===== Events =====
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await signIn($("loginEmail").value.trim(), $("loginPassword").value);
+        await init();
+      } catch (err) {
+        showStatus(loginStatus, err.message || "Login failed", false);
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      try { await signOut(); } catch {}
+      location.reload();
+    });
+
+    refreshStatsBtn.addEventListener("click", async () => {
+      try {
+        const days = Number(statsDays?.value || 30);
+        clickLogs = await fetchClicks(Math.max(30, days));
+        renderStats();
+        showStatus(statsStatus, "Stats refreshed", true);
+      } catch (e) {
+        showStatus(statsStatus, e.message || "Refresh failed", false);
+      }
+    });
+
+    statsDays.addEventListener("change", renderStats);
+
+    $("groupGenSlugBtn").addEventListener("click", () => {
+      const base = $("groupNameEn").value || $("groupNameVi").value || "";
+      $("groupSlug").value = slugify(base);
+    });
+
+    $("groupResetBtn").addEventListener("click", resetGroupForm);
+
+    groupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await saveGroup({
+          id: $("groupEditId").value || undefined,
+          slug: $("groupSlug").value,
+          name_en: $("groupNameEn").value,
+          name_vi: $("groupNameVi").value,
+          icon: $("groupIcon").value,
+          sort_order: Number($("groupSort").value || 100),
+          is_active: $("groupActive").value === "true",
+        });
+        resetGroupForm();
+        await reloadAll();
+        showStatus(groupStatus, "Saved category ✅", true);
+      } catch (err) {
+        showStatus(groupStatus, err.message || "Save category failed", false);
+      }
+    });
+
+    $("storeGenSlugBtn").addEventListener("click", () => {
+      $("storeSlug").value = slugify($("storeName").value);
+    });
+
+    $("storeResetBtn").addEventListener("click", resetStoreForm);
+
+    $("storeSelect").addEventListener("change", () => {
+      const s = storeCatalog.find(x => x.id === $("storeSelect").value);
+      if (s) $("store").value = s.name;
+    });
+
+    storeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        saveStoreCatalogRow({
+          id: $("storeEditId").value || undefined,
+          slug: $("storeSlug").value,
+          name: $("storeName").value,
+          icon: $("storeIcon").value,
+          sort_order: Number($("storeSort").value || 100),
+          is_active: $("storeActive").value === "true",
+        });
+        resetStoreForm();
+        renderStoreList();
+        renderStoreOptions();
+        showStatus(storeStatus, "Saved store ✅", true);
+      } catch (err) {
+        showStatus(storeStatus, err.message || "Save store failed", false);
+      }
+    });
+
+    $("imageUrl").addEventListener("input", () => {
+      const v = $("imageUrl").value.trim();
+      if (v) $("imgPreview").src = v;
+      if (!v) $("imgPreview").src = "./no-image.svg";
+    });
+
+    $("imageFile").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (file) $("imgPreview").src = URL.createObjectURL(file);
+    });
+
+    $("dealGenSlugBtn").addEventListener("click", () => {
+      $("dealSlug").value = slugify($("titleEn").value || $("titleVi").value);
+    });
+
+    $("dealResetBtn").addEventListener("click", resetDealForm);
+
+    $("dealListSearch").addEventListener("input", renderDealList);
+
+    dealForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        let imageUrl = $("imageUrl").value.trim();
+        const file = $("imageFile").files?.[0];
+        if (file) imageUrl = await uploadImage(file);
+
+        await saveDeal({
+          id: $("dealId").value || undefined,
+          slug: $("dealSlug").value || $("titleEn").value,
+          title_en: $("titleEn").value.trim(),
+          short_desc_en: $("shortEn").value.trim(),
+          description_en: $("descEn").value.trim(),
+          title_vi: $("titleVi").value.trim(),
+          short_desc_vi: $("shortVi").value.trim(),
+          description_vi: $("descVi").value.trim(),
+          store: ($("store").value.trim() || (storeCatalog.find(x => x.id === $("storeSelect").value)?.name || "")).trim(),
+          group_id: $("groupId").value,
+          badge: $("badge").value,
+          coupon: $("coupon").value.trim(),
+          old_price: $("oldPrice").value,
+          new_price: $("newPrice").value,
+          affiliate_url: $("affiliateUrl").value.trim(),
+          image_url: imageUrl,
+          starts_at: toIso($("startsAt").value),
+          expires_at: toIso($("expiresAt").value),
+          promo_icon: $("promoIcon").value,
+          published: $("published").value === "true",
+        });
+
+        resetDealForm();
+        await reloadAll();
+        showStatus(dealStatus, "Saved deal ✅", true);
+      } catch (err) {
+        showStatus(dealStatus, dealSaveErrorMessage(err), false);
+      }
+    });
+
+    // Email events
+    if (emailCenterBtn) {
+      emailCenterBtn.addEventListener("click", async () => {
+        emailCenterPanel.style.display = "block";
+        emailCenterPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+        try { await loadSubscribers(); } catch (e) { showStatus(emailStatus, e.message || "Load failed", false); }
+      });
+    }
+    if (refreshEmailsBtn) refreshEmailsBtn.addEventListener("click", () => loadSubscribers().catch(e => showStatus(emailStatus, e.message || "Refresh failed", false)));
+    if (emailSearch) emailSearch.addEventListener("input", () => renderEmailList(emailCenterCache));
+    if (sendAllBtn) sendAllBtn.addEventListener("click", openComposeAll);
+
+    if (emailModalClose) emailModalClose.addEventListener("click", hideEmailModal);
+    if (emailSendCancel) emailSendCancel.addEventListener("click", hideEmailModal);
+    if (emailImageClear) emailImageClear.addEventListener("click", () => {
+      emailImageFile.value = "";
+      emailImageStatus.textContent = "No image";
+    });
+    if (emailImageFile) emailImageFile.addEventListener("change", () => {
+      const f = emailImageFile.files?.[0];
+      emailImageStatus.textContent = f ? `Selected: ${f.name}` : "No image";
+    });
+    if (emailSendConfirm) emailSendConfirm.addEventListener("click", () => {
+      sendAdminEmail().catch(e => { console.error(e); toast(e.message || "Send failed", false); });
+    });
+
+    // ===== Init =====
+    async function init() {
+      try {
+        currentUser = await getSessionUser();
+
+        if (!currentUser) {
+          loginBox.style.display = "";
+          appBox.style.display = "none";
+          logoutBtn.style.display = "none";
+          setEmailCenterVisible(false);
+          return;
+        }
+
+        const ok = await isAdmin(currentUser.id);
+        if (!ok) {
+          loginBox.style.display = "";
+          appBox.style.display = "none";
+          logoutBtn.style.display = "none";
+          setEmailCenterVisible(false);
+          showStatus(loginStatus, "This account is not admin", false);
+          return;
+        }
+
+        loginBox.style.display = "none";
+        appBox.style.display = "";
+        logoutBtn.style.display = "";
+        setEmailCenterVisible(true);
+
+        await reloadAll();
+      } catch (e) {
+        console.error(e);
+        showStatus(loginStatus, e.message || "Init error", false);
+      }
+    }
+
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+    init();
+  </script>
+</body>
+</html>

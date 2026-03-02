@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#1a1630"/>
+  <rect x="20" y="20" width="760" height="560" rx="16" fill="#241b45" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="400" y="290" text-anchor="middle" fill="#d6bcfa" font-size="34" font-family="Arial, sans-serif">No Image</text>
+  <text x="400" y="335" text-anchor="middle" fill="#a78bfa" font-size="18" font-family="Arial, sans-serif">BestDeals</text>
+</svg>

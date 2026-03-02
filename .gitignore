@@ -1,0 +1,17 @@
+# secrets
+.env
+backend/.env
+
+# cloudflare wrangler cache (có thể chứa info nhạy cảm)
+frontend/.wrangler/
+
+# python cache
+__pycache__/
+*.pyc
+
+# logs
+*.log
+backend/logs/
+
+# mac
+.DS_Store
