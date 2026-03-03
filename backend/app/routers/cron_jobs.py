@@ -29,7 +29,7 @@ def daily_deals_digest(
     require_secret(x_cron_secret)
 
     # chạy khoảng 7:05pm giờ LA (có thể gọi 2 lần UTC để cover DST, endpoint tự skip)
-    if not force and not within_la_window(19, 5, 10):
+    if not force and not within_la_window(19, 05, 10):
         return {"ok": True, "skipped": True, "now_la": datetime.now(LA).isoformat()}
 
     mod = import_module("workers.daily_deals_digest")
@@ -43,8 +43,8 @@ def keyword_alerts_digest(
 ):
     require_secret(x_cron_secret)
 
-    # chạy khoảng 7:10pm giờ LA
-    if not force and not within_la_window(19, 10, 10):
+    # chạy khoảng 7:30pm giờ LA
+    if not force and not within_la_window(19, 30, 10):
         return {"ok": True, "skipped": True, "now_la": datetime.now(LA).isoformat()}
 
     mod = import_module("workers.email_alerts")
