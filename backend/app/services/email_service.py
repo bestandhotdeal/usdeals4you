@@ -8,21 +8,16 @@ from email.mime.multipart import MIMEMultipart
 def send_email(to_email: str, subject: str, html: str):
     """
     Prefer Resend (HTTPS) if RESEND_API_KEY is set.
-    Fallback to SMTP (useful for local dev).
+    Fallback to SMTP (local dev only).
 
     Returns:
       {"ok": True, "res": {...}}
       {"ok": False, "error": "..."}
     """
-    # -----------------------------
-    # Option A: Resend (recommended)
-    # -----------------------------
     resend_key = os.getenv("RESEND_API_KEY")
-    # If your domain is verified in Resend, set ALERT_FROM_EMAIL to something like:
-    #   "US Deals <no-reply@usdeals4you.com>"
-    # For quick testing you can use "onboarding@resend.dev"
     from_email = os.getenv("ALERT_FROM_EMAIL") or "onboarding@resend.dev"
 
+    # A) Resend over HTTPS
     if resend_key:
         try:
             r = requests.post(
@@ -46,9 +41,7 @@ def send_email(to_email: str, subject: str, html: str):
         except Exception as e:
             return {"ok": False, "error": f"Resend error: {e}"}
 
-    # -----------------------------
-    # Option B: SMTP (local fallback)
-    # -----------------------------
+    # B) SMTP fallback (local only)
     host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     port = int(os.getenv("SMTP_PORT", "587"))
     user = os.getenv("SMTP_USER")
