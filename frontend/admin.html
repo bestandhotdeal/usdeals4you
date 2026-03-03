@@ -921,9 +921,13 @@
           const s = storeCatalog.find(x => x.id === btn.dataset.storeDel);
           if (!s) return;
           if (!confirm(`Delete store "${s.name}"?`)) return;
+          try {
           await deleteStore(s.id);
           await reloadAll();
           showStatus(storeStatus, "Deleted store.", true);
+          } catch (e) {
+          showStatus(storeStatus, e.message || "Delete store failed", false);
+          }
         });
       });
     }
@@ -1114,7 +1118,13 @@
     // ===== Load all =====
     async function reloadAll() {
       groups = await fetchGroups(true);
-      storeCatalog = readStoreCatalogLocal();
+      // IMPORTANT: load stores from DB so Admin works on any domain (not dependent on localStorage)
+      try {
+        storeCatalog = await fetchStores(true);
+      } catch (e) {
+        console.warn("fetchStores failed:", e);
+        storeCatalog = [];
+      }
       deals = await fetchDeals();
       const days = Number(statsDays?.value || 30);
       clickLogs = await fetchClicks(Math.max(30, days)); // keep 30d base so stats switch stays instant
@@ -1365,7 +1375,7 @@ async function loadSubscribers() {
     storeForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
-        saveStoreCatalogRow({
+        await saveStoreCatalogRow({
           id: $("storeEditId").value || undefined,
           slug: $("storeSlug").value,
           name: $("storeName").value,
@@ -1374,8 +1384,7 @@ async function loadSubscribers() {
           is_active: $("storeActive").value === "true",
         });
         resetStoreForm();
-        renderStoreList();
-        renderStoreOptions();
+        await reloadAll();
         showStatus(storeStatus, "Saved store ✅", true);
       } catch (err) {
         showStatus(storeStatus, err.message || "Save store failed", false);
