@@ -9,11 +9,19 @@ def send_email(to_email: str, subject: str, html: str):
     """
     Prefer Resend (HTTPS) if RESEND_API_KEY is set.
     Fallback to SMTP (useful for local dev).
-    Returns: {"ok": True, "res": {...}} or {"ok": False, "error": "..."}
+
+    Returns:
+      {"ok": True, "res": {...}}
+      {"ok": False, "error": "..."}
     """
-    # ---------- Option A: Resend ----------
+    # -----------------------------
+    # Option A: Resend (recommended)
+    # -----------------------------
     resend_key = os.getenv("RESEND_API_KEY")
-    from_email = os.getenv("ALERT_FROM_EMAIL") or os.getenv("SMTP_USER") or "onboarding@resend.dev"
+    # If your domain is verified in Resend, set ALERT_FROM_EMAIL to something like:
+    #   "US Deals <no-reply@usdeals4you.com>"
+    # For quick testing you can use "onboarding@resend.dev"
+    from_email = os.getenv("ALERT_FROM_EMAIL") or "onboarding@resend.dev"
 
     if resend_key:
         try:
@@ -38,18 +46,20 @@ def send_email(to_email: str, subject: str, html: str):
         except Exception as e:
             return {"ok": False, "error": f"Resend error: {e}"}
 
-    # ---------- Option B: SMTP (local) ----------
+    # -----------------------------
+    # Option B: SMTP (local fallback)
+    # -----------------------------
     host = os.getenv("SMTP_HOST", "smtp.gmail.com")
     port = int(os.getenv("SMTP_PORT", "587"))
     user = os.getenv("SMTP_USER")
     password = os.getenv("SMTP_PASSWORD")
-    from_email = os.getenv("ALERT_FROM_EMAIL", user)
+    smtp_from = os.getenv("ALERT_FROM_EMAIL") or user
 
     if not user or not password:
         return {"ok": False, "error": "Missing SMTP_USER/SMTP_PASSWORD in env"}
 
     msg = MIMEMultipart("alternative")
-    msg["From"] = from_email
+    msg["From"] = smtp_from
     msg["To"] = to_email
     msg["Subject"] = subject
     msg.attach(MIMEText(html, "html", "utf-8"))
@@ -60,7 +70,7 @@ def send_email(to_email: str, subject: str, html: str):
             server.starttls()
             server.ehlo()
             server.login(user, password)
-            server.sendmail(from_email, [to_email], msg.as_string())
+            server.sendmail(smtp_from, [to_email], msg.as_string())
         return {"ok": True, "res": {"provider": "smtp", "to": to_email, "subject": subject}}
     except Exception as e:
         return {"ok": False, "error": str(e)}
