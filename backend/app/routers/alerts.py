@@ -207,9 +207,7 @@ def subscribe(payload: SubscribePayload) -> Dict[str, Any]:
         "verify_token": None if verified else verify_token,
         "unsubscribe_token": unsubscribe_token,
         "created_at": now_utc().isoformat(),
-        "email_norm": email_n,
-        "keyword_norm": keyword_n,
-    }
+}
 
     try:
         created = supabase.table("deal_alert_subscriptions").insert(insert_row).execute().data
