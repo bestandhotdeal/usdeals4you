@@ -578,7 +578,7 @@
       if(!row.slug) throw new Error("Store slug required");
       if(!row.name) throw new Error("Store name required");
 
-      const { error } = await sb.from("deal_stores").upsert(row);
+      const { error } = await sb.from("deal_stores").upsert(row, { onConflict: "slug" });
       if(error) throw error;
       return true;
     }
@@ -709,7 +709,7 @@
       if(!row.slug) throw new Error("Group slug required");
       if(!row.name_en) throw new Error("Group name EN required");
 
-      const { error } = await sb.from("deal_groups").upsert(row);
+      const { error } = await sb.from("deal_groups").upsert(row, { onConflict: "slug" });
       if(error) throw error;
       return true;
     }
