@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Andy Deal Hub</title>
+  <title>usdeals4you.com</title>
   <meta name="description" content="Daily deals, coupons, and flash sales." />
-  <link rel="stylesheet" href="styles.css" />
-  <!-- BUILD_MARK: 2026-02-28 v999 -->
+  <link rel="stylesheet" href="styles.css?v=footer_v5" />
+  <link rel="icon" href="logo.png" />
 </head>
 <body>
   <header class="topbar">
     <div class="container topbar-inner">
       <div class="brand">
-        <div class="logo">AD</div>
+        <div class="logo"><img src="logo.png" alt="<strong>usdeals4you.com</strong>" class="logo-img" style="width:36px;height:36px;object-fit:contain;" /></div>
         <div>
-          <div class="brand-title">Andy Deal Hub</div>
+          <div class="brand-title"><strong>usdeals4you.com</strong></div>
           <div class="brand-sub" id="brandSub">Deals • Coupons • Flash Sale</div>
         </div>
       </div>
@@ -60,7 +60,6 @@
     </div>
 
     <div class="layout">
-      <!-- LEFT -->
       <aside class="sidebar">
         <div class="panel">
           <div class="panel-title-row">
@@ -77,32 +76,110 @@
         </div>
       </aside>
 
-      <!-- RIGHT -->
       <section class="content">
         <div class="panel panel-flex">
           <div class="panel-title-row">
             <h2 id="featuredTitle">Featured Deals</h2>
             <div class="muted" id="dealCount">0 deals</div>
           </div>
+
           <div id="dealGrid" class="deal-grid"></div>
+
+          <div class="load-more-row">
+            <button class="btn" id="loadMoreBtn" type="button">Load more</button>
+          </div>
         </div>
       </section>
     </div>
-
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <div>
-        <div class="footer-title">Andy Deal Hub</div>
-        <div class="footer-sub">Categories • Stores • Daily hot deals</div>
+      <div class="footer-brand">
+        <img src="logo_icon_footer.png" alt="UsDeals" class="footer-logo" width="46" height="46" />
+        <div>
+          <div class="footer-title"><strong>usdeals4you.com</strong></div>
+          <div class="footer-sub"><strong>usdeals4you.com</strong></div>
+        </div>
       </div>
-      <div class="footer-meta">
-        <span>© <span id="footerYear"></span> Andy Deal Hub</span>
-        <span>Built for deals tracking</span>
+
+      <div class="footer-actions">
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="terms.html">Terms and Conditions</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="privacy.html">Privacy Policy</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="amazon-associate-disclosure.html">Amazon Associate Disclosure</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="website-liability-shield.html">Website Liability Shield</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="email-disclaimer.html">Email Disclaimer</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="disclaimer.html">Disclaimer</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="cookies-policy.html">Cookies Policy</a>
+           <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="dmca.html">DMCA</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="trademark-disclaimer.html">Trademark Disclaimer</a>
+          <span class="footer-dot" aria-hidden="true">•</span>
+
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <div class="footer-legal">
+          <div class="footer-highlight">
+            As an Amazon Associate, <strong>usdeals4you.com</strong> earns from qualifying purchases.
+          </div>
+
+          <div class="footer-highlight">
+            <strong>usdeals4you.com</strong> is an independent deal-sharing website.
+            We may earn commissions from affiliate links, but we are not affiliated with,
+            endorsed by, or sponsored by any retailer or brand unless explicitly stated.
+          </div>
+        </div>
+
+        <div class="footer-social" aria-label="Social links">
+          <a class="social-link facebook" href="https://m.facebook.com/groups/2421211278336881/?ref=share&mibextid=wwXIfr"
+            target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="social-ico" width="18" height="18">
+              <path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.5c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V11H18l-.4 3h-2.3v7A10 10 0 0 0 22 12z"/>
+            </svg>
+          </a>
+
+          <a class="social-link tiktok" href="https://www.tiktok.com/@andynguyen9431"
+            target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="social-ico" width="18" height="18">
+              <path d="M16.7 2c.3 2.6 2 4.7 4.3 5v3.1c-1.7 0-3.2-.6-4.3-1.5v6.4c0 3.9-3.2 7.1-7.1 7.1S2.5 19 2.5 15.1 5.7 8 9.6 8c.5 0 1 .1 1.4.2v3.4c-.4-.2-.9-.3-1.4-.3-2 0-3.6 1.6-3.6 3.6s1.6 3.6 3.6 3.6 3.6-1.6 3.6-3.6V2h3.5z"/>
+            </svg>
+          </a>
+
+          <a class="social-link telegram" href="https://t.me/+3ayNHPJCpIhiYjkx"
+            target="_blank" rel="noopener noreferrer" aria-label="Telegram" title="Telegram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="social-ico" width="18" height="18">
+              <path d="M22 3 2.9 10.6c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 11.3-7.1c.5-.3 1-.1.6.2l-9.2 8.4-.4 5c.6 0 .9-.3 1.2-.6l2.4-2.3 5 3.7c.9.5 1.5.2 1.7-.8L23.8 4c.3-1.3-.5-1.9-1.8-1z"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-copy">© <span id="footerYear">2026</span> <strong>usdeals4you.com</strong></div>
+    </div>
   </footer>
+
 
   <div class="modal hidden" id="alertModal" aria-hidden="true">
     <div class="modal-backdrop" data-alert-close="1"></div>
@@ -113,7 +190,7 @@
       </div>
       <form id="alertForm" class="form-grid">
         <div class="field">
-          <label>Title / Short Name</label>
+          <label>Title / Keyword</label>
           <input id="alertKeyword" type="text" placeholder="tivi / shoe / iphone..." required />
         </div>
 
@@ -127,7 +204,7 @@
         </div>
 
         <div id="alertStatus" class="status"></div>
-        <div class="muted">Alert request will be saved. (Email sending needs your backend/automation worker connected to process these alerts.)</div>
+        <div class="muted">We’ll email you when we find a matching deal.</div>
       </form>
     </div>
   </div>
@@ -135,10 +212,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/supabase-config.js"></script>
   <script>
-    // ===== Helpers =====
     const sb = window.sb;
     const LS_LANG = "deal_lang_v1";
-    const LS_ALERTS = "deal_alert_requests_v1";
 
     const I18N = {
       en: {
@@ -152,6 +227,7 @@
         featured: "Featured Deals",
         count: (n) => `${n} deal${n === 1 ? "" : "s"}`,
         allGroups: "Categories",
+        allStores: "All Stores",
         newest: "Newest",
         discount: "Biggest discount",
         low: "Price: low to high",
@@ -162,9 +238,12 @@
         start: "Start deal",
         expire: "Expires",
         noDeals: "No deals found.",
-        allStores: "All Stores",
-        alertSaved: "Alert saved ✅",
-        alertNeedFields: "Please enter title and email.",
+        limitedNote: "⚠️ Limited-time deal! Price and availability may change without notice. If the deal has expired or the price has changed, please click “Expired” to help keep the deal list accurate.",
+        expiredBtn: "Expired",
+        expiredThanks: "Thanks! Marked as expired ✅",
+        expiredFail: "Could not send report. Please try again later.",
+        loadMore: "Load more",
+        noMore: "No more deals",
       },
       vi: {
         brandSub: "Deal • Mã giảm giá • Flash Sale",
@@ -177,6 +256,7 @@
         featured: "Deal nổi bật",
         count: (n) => `${n} deal`,
         allGroups: "Danh mục",
+        allStores: "Tất cả store",
         newest: "Mới nhất",
         discount: "Giảm nhiều nhất",
         low: "Giá thấp → cao",
@@ -187,107 +267,180 @@
         start: "Bắt đầu",
         expire: "Hết hạn",
         noDeals: "Không có deal phù hợp.",
-        allStores: "Tất cả store",
-        alertSaved: "Đã lưu alert ✅",
-        alertNeedFields: "Vui lòng nhập tên và email.",
+        limitedNote: "⚠️ Ưu đãi có thời hạn! Giá cả và tình trạng hàng có thể thay đổi mà không cần báo trước. Nếu ưu đãi đã hết hạn hoặc giá đã thay đổi, vui lòng nhấp vào “Đã hết hạn” để giúp cập nhật danh sách ưu đãi chính xác.",
+        expiredBtn: "Hết deal",
+        expiredThanks: "Cảm ơn! Đã báo hết deal ✅",
+        expiredFail: "Không gửi được báo cáo. Vui lòng thử lại.",
+        loadMore: "Tải thêm",
+        noMore: "Hết deal",
       }
     };
 
-    function esc(s) {
-      return String(s ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+    function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");}
+    function getLang(){
+       try{
+         const v = (sessionStorage.getItem("lang") || sessionStorage.getItem(LS_LANG) || "en").toLowerCase();
+         return (v === "vi") ? "vi" : "en";
+       }catch(_){
+         return "en";
+       }
+     }
+     function setLang(v){
+       const val = (String(v||"").toLowerCase() === "vi") ? "vi" : "en";
+       try{ sessionStorage.setItem("lang", val); }catch(_ ){}
+       try{ sessionStorage.setItem(LS_LANG, val); }catch(_ ){}
+
+       try{ localStorage.removeItem("lang"); }catch(_ ){}
+       try{ localStorage.removeItem(LS_LANG); }catch(_ ){}
+       try{ document.documentElement.setAttribute("lang", val); }catch(_ ){}
+     }
+
+    function toast(msg, ok=true){
+      let box = document.getElementById("toastBox");
+      if(!box){
+        box = document.createElement("div");
+        box.id = "toastBox";
+        box.style.position = "fixed";
+        box.style.right = "14px";
+        box.style.bottom = "14px";
+        box.style.zIndex = "99999";
+        box.style.display = "grid";
+        box.style.gap = "8px";
+        document.body.appendChild(box);
+      }
+      const item = document.createElement("div");
+      item.textContent = msg || "";
+      item.style.padding = "10px 12px";
+      item.style.borderRadius = "12px";
+      item.style.background = ok ? "rgba(16,185,129,.95)" : "rgba(239,68,68,.95)";
+      item.style.color = "#fff";
+      item.style.boxShadow = "0 10px 22px rgba(0,0,0,.25)";
+      item.style.maxWidth = "420px";
+      box.appendChild(item);
+      setTimeout(()=>{ item.style.opacity = "0"; item.style.transition="opacity .3s"; }, 2200);
+      setTimeout(()=>{ item.remove(); }, 2600);
     }
-    function getLang() { return localStorage.getItem(LS_LANG) || "en"; }
-    function setLang(v) { localStorage.setItem(LS_LANG, v); }
-    function hasPrice(v) {
+
+    function hasPrice(v){
       if (v === null || v === undefined) return false;
       const s = String(v).trim();
       if (!s) return false;
       const n = Number(s);
       return Number.isFinite(n) && n >= 0;
     }
-    function money(v) {
-      if (!hasPrice(v)) return "";
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(v));
+    function money(v){
+      if(!hasPrice(v)) return "";
+      return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(v));
     }
-    function compactPriceHtml(d) {
-      const parts = [];
-      if (hasPrice(d.new_price)) parts.push(money(d.new_price));
-      if (hasPrice(d.old_price)) parts.push(`<span>${money(d.old_price)}</span>`);
-      if (!parts.length) parts.push(`<span class="empty-price">No price</span>`);
-      return parts.join(" ");
+    function discountPct(d){
+      if(!hasPrice(d.old_price) || !hasPrice(d.new_price)) return 0;
+      const oldP=Number(d.old_price), newP=Number(d.new_price);
+      if(!oldP || newP>oldP) return 0;
+      return Math.round(((oldP-newP)/oldP)*100);
     }
-    function priceRowHtml(d, t) {
-      const pct = discountPct(d);
-      const hasNew = hasPrice(d.new_price);
-      const hasOld = hasPrice(d.old_price);
-      if (!hasNew && !hasOld) {
-        return `<div class="price-row"><div class="price-note">${esc(t.view)}</div></div>`;
-      }
-      return `
-        <div class="price-row">
-          <div class="price-new">${hasNew ? money(d.new_price) : ""}</div>
-          <div class="price-old">${hasOld ? money(d.old_price) : ""}</div>
-          ${pct ? `<div class="save-chip">-${pct}%</div>` : ""}
-        </div>
-      `;
-    }
-    function formatDate(iso, lang) {
-      if (!iso) return "";
+    function formatDate(iso, lang){
+      if(!iso) return "";
       const d = new Date(iso);
-      if (Number.isNaN(d.getTime())) return "";
-      return d.toLocaleString(lang === "vi" ? "vi-VN" : "en-US", { dateStyle: "medium", timeStyle: "short" });
+      if(Number.isNaN(d.getTime())) return "";
+      return d.toLocaleString(lang==="vi"?"vi-VN":"en-US",{dateStyle:"medium",timeStyle:"short"});
     }
-    function discountPct(d) {
-      if (!hasPrice(d.old_price) || !hasPrice(d.new_price)) return 0;
-      const oldP = Number(d.old_price);
-      const newP = Number(d.new_price);
-      if (!oldP || newP > oldP || newP < 0) return 0;
-      return Math.round(((oldP - newP) / oldP) * 100);
-    }
-    function isNewDeal(d) {
-      if (!d.created_at) return false;
+    function isNewDeal(d){
+      if(!d.created_at) return false;
       const age = Date.now() - new Date(d.created_at).getTime();
       return age <= 3 * 24 * 3600 * 1000;
     }
-    function groupName(g, lang) {
-      if (!g) return lang === "vi" ? "Khác" : "Other";
-      return lang === "vi" ? (g.name_vi || g.name_en) : (g.name_en || g.name_vi || "Other");
+    function groupName(g, lang){
+      if(!g) return lang==="vi"?"Khác":"Other";
+      return lang==="vi" ? (g.name_vi||g.name_en) : (g.name_en||g.name_vi||"Other");
     }
 
-    // ===== Supabase data =====
-    async function fetchGroups() {
+    function starsHtml(avg, count) {
+      const a = Number(avg || 0);
+      const c = Number(count || 0);
+      if (!c) return `<div class="stars muted">☆☆☆☆☆ <span class="stars-count">(0)</span></div>`;
+      const r = Math.max(0, Math.min(5, Math.round(a * 10) / 10));
+      const full = Math.round(r);
+      let out = "";
+      for (let i=1;i<=5;i++) out += i <= full ? "★" : "☆";
+      return `<div class="stars" title="${r} / 5">${out} <span class="stars-count">(${c})</span></div>`;
+    }
+
+    async function fetchGroups(){
       const { data, error } = await sb
         .from("deal_groups")
         .select("*")
         .eq("is_active", true)
-        .order("sort_order", { ascending: true })
-        .order("name_en", { ascending: true });
-      if (error) throw error;
+        .order("sort_order",{ascending:true})
+        .order("name_en",{ascending:true});
+      if(error) throw error;
       return data || [];
     }
 
-    async function fetchDeals() {
+    async function fetchStores(){
+      try{
+        const { data, error } = await sb
+          .from("deal_stores")
+          .select("id,slug,name,icon,is_active,sort_order,created_at")
+          .eq("is_active", true)
+          .order("sort_order",{ascending:true})
+          .order("name",{ascending:true});
+        if(error) throw error;
+        return data || [];
+      }catch(e){
+        return [];
+      }
+    }
+
+    async function fetchDeals(limit){
       const { data, error } = await sb
         .from("deals")
         .select(`
-          *,
-          deal_group:group_id (
-            id, slug, name_en, name_vi, icon, is_active, sort_order
-          )
+          id,slug,title_en,title_vi,short_desc_en,short_desc_vi,store,group_id,badge,coupon,old_price,new_price,affiliate_url,image_url,created_at,starts_at,expires_at,expired_cleared_at,like_count,dislike_count,click_count,promo_icon,
+          deal_group:group_id ( id, slug, name_en, name_vi, icon, is_active, sort_order )
         `)
         .eq("published", true)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+        .order("created_at", { ascending: false })
+        .range(0, Math.max(0, limit - 1));
+      if(error) throw error;
       return data || [];
     }
 
-    async function trackClick({ dealId, slug, source, lang }) {
-      if (!dealId) return;
-      try {
+    async function fetchReviewStats(dealIds){
+      if(!dealIds.length) return {};
+      try{
+        const { data, error } = await sb
+          .from("deal_review_stats")
+          .select("deal_id,avg_rating,review_count")
+          .in("deal_id", dealIds);
+        if(error) throw error;
+        const map = {};
+        for(const r of (data||[])) map[r.deal_id]=r;
+        return map;
+      }catch(e){ return {}; }
+    }
+
+    async function fetchExpiredStats(dealIds){
+      if(!dealIds.length) return {};
+      try{
+        const { data, error } = await sb
+          .from("deal_expired_stats")
+          .select("deal_id,report_count,last_report_at")
+          .in("deal_id", dealIds);
+        if(error) throw error;
+        const map = {};
+        for(const r of (data||[])) map[r.deal_id]=r;
+        return map;
+      }catch(e){ return {}; }
+    }
+
+    async function reportExpired(dealId){
+      const { error } = await sb.from("deal_expired_reports").insert({ deal_id: dealId });
+      if(error) throw error;
+      return true;
+    }
+
+    async function trackClick({ dealId, slug, source, lang }){
+      try{
         await sb.from("deal_clicks").insert({
           deal_id: dealId,
           slug: slug || null,
@@ -296,24 +449,20 @@
           page_path: location.pathname + location.search,
           referrer: document.referrer || null
         });
-      } catch (e) {
-        console.warn("track click failed", e.message);
-      }
+      }catch(_){}
     }
 
-    async function reactToDeal(dealId, vote) {
-      // vote: 1 or -1
-      if (!dealId) return;
+    async function reactToDeal(dealId, vote){
       const { data: deal, error: e1 } = await sb
         .from("deals")
         .select("id, like_count, dislike_count")
         .eq("id", dealId)
         .single();
-      if (e1) throw e1;
+      if(e1) throw e1;
 
       const patch = {};
-      if (vote === 1) patch.like_count = Number(deal.like_count || 0) + 1;
-      if (vote === -1) patch.dislike_count = Number(deal.dislike_count || 0) + 1;
+      if(vote===1) patch.like_count = Number(deal.like_count||0)+1;
+      if(vote===-1) patch.dislike_count = Number(deal.dislike_count||0)+1;
 
       const { data, error: e2 } = await sb
         .from("deals")
@@ -321,14 +470,17 @@
         .eq("id", dealId)
         .select("id, like_count, dislike_count")
         .single();
-      if (e2) throw e2;
+      if(e2) throw e2;
       return data;
     }
 
-    // ===== State =====
     let lang = getLang();
     let groups = [];
+    let storesDb = [];
     let deals = [];
+    let reviewStats = {};
+    let expiredStats = {};
+    let dealLimit = 60;
 
     const el = {
       langEnBtn: document.getElementById("langEnBtn"),
@@ -356,9 +508,18 @@
       alertEmail: document.getElementById("alertEmail"),
       alertStatus: document.getElementById("alertStatus"),
       footerYear: document.getElementById("footerYear"),
+      loadMoreBtn: document.getElementById("loadMoreBtn"),
     };
 
-    function applyI18n() {
+    function localized(deal){
+      return {
+        ...deal,
+        title_t: lang==="vi" ? (deal.title_vi || deal.title_en) : (deal.title_en || deal.title_vi),
+        short_t: lang==="vi" ? (deal.short_desc_vi || deal.short_desc_en) : (deal.short_desc_en || deal.short_desc_vi),
+      };
+    }
+
+    function applyI18n(){
       const t = I18N[lang];
       document.documentElement.lang = lang;
       el.brandSub.textContent = t.brandSub;
@@ -369,14 +530,17 @@
       el.popularTitle.textContent = t.popular;
       el.groupsTitle.textContent = t.groups;
       el.featuredTitle.textContent = t.featured;
-      el.langEnBtn.classList.toggle("primary", lang === "en");
-      el.langViBtn.classList.toggle("primary", lang === "vi");
+
+      el.langEnBtn.classList.toggle("primary", lang==="en");
+      el.langViBtn.classList.toggle("primary", lang==="vi");
 
       el.sortFilter.options[0].text = t.newest;
       el.sortFilter.options[1].text = t.discount;
       el.sortFilter.options[2].text = t.low;
       el.sortFilter.options[3].text = t.high;
       el.sortFilter.options[4].text = t.popularSort;
+
+      el.loadMoreBtn.textContent = t.loadMore;
 
       renderGroupFilter();
       renderStoreFilter();
@@ -385,177 +549,444 @@
       renderDeals();
     }
 
-    function renderGroupFilter() {
+    function renderGroupFilter(){
       const t = I18N[lang];
       const current = el.groupFilter.value || "all";
       el.groupFilter.innerHTML = `
         <option value="all">${esc(t.allGroups)}</option>
-        ${groups.map(g => `<option value="${g.id}">${esc((g.icon ? g.icon + " " : "") + groupName(g, lang))}</option>`).join("")}
+        ${groups.map(g => `<option value="${g.id}">${esc((g.icon?g.icon+" ":"")+groupName(g,lang))}</option>`).join("")}
       `;
-      el.groupFilter.value = groups.some(g => g.id === current) ? current : "all";
+      el.groupFilter.value = groups.some(g => g.id===current) ? current : "all";
     }
 
-
-    function getStoreOptions() {
-      const seen = new Map();
-      for (const d of deals) {
-        const raw = String(d.store || "").trim();
-        if (!raw) continue;
-        const key = raw.toLowerCase();
-        if (!seen.has(key)) seen.set(key, raw);
-      }
-      return [...seen.entries()]
-        .map(([key, label]) => ({ key, label }))
-        .sort((a, b) => a.label.localeCompare(b.label));
+    function getStoreOptions(){
+      if(storesDb && storesDb.length) return storesDb;
+      const names = new Set(deals.map(d => String(d.store||"").trim()).filter(Boolean));
+      return [...names].map((name)=>({id:name,name,slug:name.toLowerCase().replace(/\s+/g,"-"),icon:""}));
     }
 
-    function renderStoreFilter() {
-      const current = el.storeFilter.value || "all";
+    function renderStoreFilter(){
       const t = I18N[lang];
+      const current = el.storeFilter.value || "all";
       const stores = getStoreOptions();
       el.storeFilter.innerHTML = `
         <option value="all">${esc(t.allStores)}</option>
-        ${stores.map(s => `<option value="${esc(s.key)}">${esc(s.label)}</option>`).join("")}
+        ${stores.map(s => `<option value="${esc(s.name)}">${esc((s.icon?s.icon+" ":"")+s.name)}</option>`).join("")}
       `;
-      el.storeFilter.value = stores.some(s => s.key === current) ? current : "all";
+      el.storeFilter.value = current;
     }
 
-    function renderQuickGroups() {
-      el.groupQuickList.innerHTML = `
-        <button class="quick-pill ${el.groupFilter.value === "all" ? "active" : ""}" data-group-id="all">
-          ${esc(I18N[lang].allGroups)}
-        </button>
-        ${groups.map(g => `
-          <button class="quick-pill ${el.groupFilter.value === g.id ? "active" : ""}" data-group-id="${g.id}">
-            ${esc((g.icon ? g.icon + " " : "") + groupName(g, lang))}
-          </button>
-        `).join("")}
-      `;
-
-      el.groupQuickList.querySelectorAll("[data-group-id]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          el.groupFilter.value = btn.dataset.groupId;
-          renderQuickGroups();
-          renderDeals();
-        });
+    function renderQuickGroups(){
+      el.groupQuickList.innerHTML = groups.slice(0,18).map(g => `
+        <button class="quick-btn" data-quick-group="${g.id}">${esc((g.icon?g.icon+" ":"")+groupName(g,lang))}</button>
+      `).join("");
+      el.groupQuickList.querySelectorAll("[data-quick-group]").forEach(btn => {
+        btn.onclick = () => { el.groupFilter.value = btn.dataset.quickGroup; renderDeals(); };
       });
     }
 
-    function getFilteredDeals() {
-      const q = (el.searchInput.value || "").trim().toLowerCase();
-      const gid = el.groupFilter.value || "all";
-      const storeKey = el.storeFilter.value || "all";
-      const sort = el.sortFilter.value || "new";
+    function getFilteredDeals(){
+      const q = (el.searchInput.value||"").trim().toLowerCase();
+      const gid = el.groupFilter.value||"all";
+      const store = el.storeFilter.value||"all";
+      const sort = el.sortFilter.value||"new";
 
-      let rows = [...deals];
+      let rows = deals.slice();
+      if(gid!=="all") rows = rows.filter(d => d.group_id === gid);
+      if(store!=="all") rows = rows.filter(d => String(d.store||"").trim() === store);
 
-      if (gid !== "all") rows = rows.filter(d => d.group_id === gid);
-      if (storeKey !== "all") rows = rows.filter(d => String(d.store || "").trim().toLowerCase() === storeKey);
-
-      if (q) {
+      if(q){
         rows = rows.filter(d => {
-          const gname = groupName(d.deal_group, lang);
-          const text = [
-            d.title_en, d.title_vi, d.short_desc_en, d.short_desc_vi,
-            d.description_en, d.description_vi, d.store, d.slug, gname
-          ].join(" ").toLowerCase();
+          const text = [d.title_en,d.title_vi,d.short_desc_en,d.short_desc_vi,d.store,d.slug].join(" ").toLowerCase();
           return text.includes(q);
         });
       }
 
-      rows.sort((a, b) => {
-        if (sort === "discount") return discountPct(b) - discountPct(a);
-        if (sort === "low") return Number(a.new_price || 0) - Number(b.new_price || 0);
-        if (sort === "high") return Number(b.new_price || 0) - Number(a.new_price || 0);
-        if (sort === "popular") return Number(b.click_count || 0) - Number(a.click_count || 0);
-        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-      });
-
+      if(sort==="new") rows.sort((a,b)=>new Date(b.created_at).getTime()-new Date(a.created_at).getTime());
+      if(sort==="discount") rows.sort((a,b)=>discountPct(b)-discountPct(a));
+      if(sort==="low") rows.sort((a,b)=>Number(a.new_price||a.old_price||1e18)-Number(b.new_price||b.old_price||1e18));
+      if(sort==="high") rows.sort((a,b)=>Number(b.new_price||b.old_price||0)-Number(a.new_price||a.old_price||0));
+      if(sort==="popular") rows.sort((a,b)=>Number(b.click_count||0)-Number(a.click_count||0));
       return rows;
     }
 
-    function localized(d) {
+        function bindTrackLinks(container){
+      container.querySelectorAll("[data-track-link='1']").forEach(a => {
+        a.addEventListener("click", async () => {
+          await trackClick({dealId:a.dataset.dealId, slug:a.dataset.slug, source:a.dataset.source, lang});
+        });
+      });
+    }
+
+    // Block affiliate navigation for EXPIRED deals (flash the note instead)
+    function __flashExpiredNote(noteEl){
+      if(!noteEl) return;
+      noteEl.classList.remove("expired-flash");
+      // restart CSS animation
+      void noteEl.offsetWidth;
+      noteEl.classList.add("expired-flash");
+      setTimeout(()=>noteEl.classList.remove("expired-flash"), 950);
+    }
+
+    function flashExpiredNoteFrom(el){
+      const dealId = el?.dataset?.expiredFor || el?.dataset?.dealId;
+      let noteEl = null;
+
+      // Try: card note in Featured list
+      if(dealId){
+        const card = document.querySelector(`.deal-card button[data-expired-report="${dealId}"]`)?.closest(".deal-card");
+        noteEl = card?.querySelector(".deal-note-highlight");
+      }
+
+      // Try: note inside the same card (fallback)
+      if(!noteEl){
+        const card = el?.closest?.(".deal-card");
+        noteEl = card?.querySelector?.(".deal-note-highlight");
+      }
+
+      // If user clicked from Popular list, still flash the featured card note if present
+      if(noteEl) __flashExpiredNote(noteEl);
+      else toast("EXPIRED", false);
+    }
+
+    function bindExpiredBlockLinks(container){
+      container.querySelectorAll('[data-expired-block="1"]').forEach(el=>{
+        el.addEventListener("click",(e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          flashExpiredNoteFrom(el);
+        });
+      });
+    }
+
+    function bindReactionButtons(container){
+      container.querySelectorAll("[data-react='1']").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const dealId = btn.dataset.dealId;
+          const vote = Number(btn.dataset.vote||0);
+          try{
+            const updated = await reactToDeal(dealId, vote);
+            const card = btn.closest(".deal-card");
+            if(card){
+              const likeEl = card.querySelector("[data-like-count]");
+              const dislikeEl = card.querySelector("[data-dislike-count]");
+              if(likeEl) likeEl.textContent = updated.like_count ?? likeEl.textContent;
+              if(dislikeEl) dislikeEl.textContent = updated.dislike_count ?? dislikeEl.textContent;
+            }
+          }catch(e){ toast(e.message||"Vote failed", false); }
+        });
+      });
+    }
+
+    
+    // ===== Expired Email Modal =====
+    let __expiredDealId = null;
+    let __expiredEventsBound = false;
+
+    function __isValidEmail(email){
+      const e = String(email||"").trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    }
+
+    function __expiredI18n(){
+      const isVi = (lang === "vi");
       return {
-        ...d,
-        title_t: lang === "vi" ? (d.title_vi || d.title_en || "") : (d.title_en || d.title_vi || ""),
-        short_t: lang === "vi" ? (d.short_desc_vi || d.short_desc_en || "") : (d.short_desc_en || d.short_desc_vi || ""),
-        desc_t: lang === "vi" ? (d.description_vi || d.description_en || "") : (d.description_en || d.description_vi || ""),
+        title: isVi ? "Báo hết deal" : "Report Expired",
+        emailLabel: "Email",
+        prompt: isVi ? "⚠️ Nhập email để báo deal này đã hết." : "⚠️ Enter your email to report this deal as expired.",
+        checkText: "YES! Send me exclusive 'Hidden Deals' & Price glitches before they expire!",
+        cancel: "Cancel",
+        submit: isVi ? "Gửi" : "Submit",
+        sending: isVi ? "Đang gửi..." : "Sending...",
+        needEmail: isVi ? "Vui lòng nhập email hợp lệ." : "Please enter a valid email.",
+        missingDeal: isVi ? "Thiếu deal ID. Vui lòng thử lại." : "Missing deal ID. Please try again.",
+        thanks: (I18N && I18N[lang] && I18N[lang].expiredThanks) ? I18N[lang].expiredThanks : (isVi ? "Cảm ơn! Đã báo hết deal ✅" : "Thanks! Marked as expired ✅"),
+        fail: (I18N && I18N[lang] && I18N[lang].expiredFail) ? I18N[lang].expiredFail : (isVi ? "Không gửi được báo cáo. Vui lòng thử lại." : "Could not send report. Please try again later.")
       };
     }
 
-    function bindTrackLinks(root) {
-      root.querySelectorAll("[data-track-link='1']").forEach(a => {
-        a.addEventListener("click", async (e) => {
-          e.preventDefault();
-          const href = a.getAttribute("href");
-          const dealId = a.dataset.dealId;
-          const slug = a.dataset.slug;
-          const source = a.dataset.source || "web";
-          window.open(href, "_blank", "noopener,noreferrer");
-          trackClick({ dealId, slug, source, lang });
-        });
-      });
+    function __setExpiredModalText(){
+      const t = __expiredI18n();
+      const titleEl = document.getElementById("expiredModalTitle");
+      const labelEl = document.getElementById("expiredEmailLabel");
+      const promptEl = document.getElementById("expiredPromptText");
+      const checkEl = document.getElementById("expiredSubLabel");
+      const cancelEl = document.getElementById("expiredCancelBtn");
+      const submitEl = document.getElementById("expiredSubmitBtn");
+
+      if(titleEl) titleEl.textContent = t.title;
+      if(labelEl) labelEl.textContent = t.emailLabel;
+      if(promptEl) promptEl.textContent = t.prompt;
+      if(checkEl) checkEl.textContent = t.checkText;
+      if(cancelEl) cancelEl.textContent = t.cancel;
+      if(submitEl) submitEl.textContent = t.submit;
     }
 
-    function bindReactionButtons(root) {
-      root.querySelectorAll("[data-react]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const dealId = btn.dataset.dealId;
-          const vote = Number(btn.dataset.vote || 1);
-          try {
-            const rs = await reactToDeal(dealId, vote);
-            const wrap = btn.closest(".reactions");
-            wrap.querySelector("[data-like-count]").textContent = rs.like_count || 0;
-            wrap.querySelector("[data-dislike-count]").textContent = rs.dislike_count || 0;
-            deals = deals.map(d => d.id === dealId ? { ...d, like_count: rs.like_count, dislike_count: rs.dislike_count } : d);
-          } catch (e) {
-            console.error(e);
-          }
-        });
+    function __ensureExpiredModal(){
+      let modal = document.getElementById("expiredModal");
+
+      if(!modal){
+        const wrap = document.createElement("div");
+        wrap.innerHTML = `
+          <div class="modal hidden" id="expiredModal" aria-hidden="true">
+            <div class="modal-backdrop" id="expiredBackdrop"></div>
+            <div class="modal-card">
+              <div class="panel-title-row">
+                <h2 id="expiredModalTitle">Report Expired</h2>
+                <button class="btn mini-btn" type="button" id="expiredCloseBtn">✕</button>
+              </div>
+
+              <div class="field">
+                <label id="expiredEmailLabel">Email</label>
+                <input id="expiredEmailInput" type="email" placeholder="you@email.com" />
+                <div id="expiredPromptText" style="margin-top:6px; color: rgba(245,158,11,.95); font-weight:700;">⚠️ Enter your email to report this deal as expired.</div>
+
+                <div style="display:flex; gap:10px; align-items:flex-start; margin-top:5px;">
+                  <input type="checkbox" id="expiredSubCheck" style="margin-top:4px;" />
+                  <label for="expiredSubCheck" style="cursor:pointer;">
+                    <span id="expiredSubLabel" style="color: rgba(245,158,11,.95); font-weight:700;">YES! Send me exclusive 'Hidden Deals' & Price glitches before they expire!</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="row-inline" style="justify-content:flex-end; gap:10px; margin-top:12px">
+                <button class="btn" type="button" id="expiredCancelBtn">Cancel</button>
+                <button class="btn primary" type="button" id="expiredSubmitBtn">Submit</button>
+              </div>
+
+              <div id="expiredModalStatus" class="status"></div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(wrap.firstElementChild);
+        modal = document.getElementById("expiredModal");
+      }
+
+      __setExpiredModalText();
+
+      if(__expiredEventsBound) return;
+      __expiredEventsBound = true;
+
+      const close = () => {
+        const m = document.getElementById("expiredModal");
+        const status = document.getElementById("expiredModalStatus");
+        const input = document.getElementById("expiredEmailInput");
+        const subCheck = document.getElementById("expiredSubCheck");
+
+      let __subMsg = "";
+      let __subAlready = false;
+        if(!m) return;
+        m.classList.add("hidden");
+        m.setAttribute("aria-hidden","true");
+        if(status){ status.className="status"; status.textContent=""; }
+        if(input) input.value = "";
+        if(subCheck) subCheck.checked = false;
+        try{ localStorage.removeItem("expired_email"); }catch(e){}
+        __expiredDealId = null;
+      };
+
+      document.getElementById("expiredBackdrop")?.addEventListener("click", close);
+      document.getElementById("expiredCloseBtn")?.addEventListener("click", close);
+      document.getElementById("expiredCancelBtn")?.addEventListener("click", close);
+
+      document.addEventListener("keydown",(e)=>{
+        const m = document.getElementById("expiredModal");
+        if(e.key==="Escape" && m && !m.classList.contains("hidden")) close();
       });
+
+      document.getElementById("expiredSubmitBtn")?.addEventListener("click", (e)=>{
+        e.preventDefault();
+        submitExpiredReport();
+      });
+
+      window.__closeExpiredModal = close; // for internal use
     }
 
-    function renderPopular() {
-      const top = [...deals]
-        .sort((a, b) => Number(b.click_count || 0) - Number(a.click_count || 0))
-        .slice(0, 8);
+    function openExpiredModal(dealId){
+      __ensureExpiredModal();
+      __expiredDealId = dealId;
 
-      if (!top.length) {
-        el.popularList.innerHTML = `<div class="muted">No data</div>`;
+      __setExpiredModalText();
+
+      const m = document.getElementById("expiredModal");
+      const input = document.getElementById("expiredEmailInput");
+      const status = document.getElementById("expiredModalStatus");
+
+      if(status){ status.className="status"; status.textContent=""; }
+      if(input) input.value = "";
+      const subCheck = document.getElementById("expiredSubCheck");
+      if(subCheck) subCheck.checked = false;
+      try{ localStorage.removeItem("expired_email"); }catch(e){ }
+
+      m.classList.remove("hidden");
+      m.setAttribute("aria-hidden","false");
+      setTimeout(()=>input?.focus?.(), 50);
+    }
+
+    async function __postFeedback(payload, timeoutMs = 5000){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try{
+        const resp = await fetch("/api/alerts/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+        const data = await resp.json().catch(() => null);
+        return {
+          ok: !!(resp.ok && data?.ok),
+          alreadySubscribed: !!data?.already_subscribed,
+          subscribed: !!data?.subscribed,
+          subscriptionOk: data?.subscription_ok !== false,
+          mailOk: !!data?.mail_ok,
+          error: data?.detail || data?.subscription_error || data?.mail?.error || null,
+        };
+      }catch(e){
+        return {
+          ok: false,
+          alreadySubscribed: false,
+          subscribed: false,
+          subscriptionOk: false,
+          mailOk: false,
+          error: e?.name === "AbortError" ? "Feedback request timed out." : (e?.message || "Feedback request failed."),
+        };
+      }finally{
+        clearTimeout(timer);
+      }
+    }
+
+    async function submitExpiredReport(){
+      const t = __expiredI18n();
+      const status = document.getElementById("expiredModalStatus");
+      const input = document.getElementById("expiredEmailInput");
+      const submitBtn = document.getElementById("expiredSubmitBtn");
+      const subCheck = document.getElementById("expiredSubCheck");
+
+      const email = (input?.value || "").trim();
+
+      if(!__expiredDealId){
+        if(status){ status.className="status show err"; status.textContent=t.missingDeal; }
         return;
       }
 
+      if(!__isValidEmail(email)){
+        if(status){ status.className="status show err"; status.textContent=t.needEmail; }
+        return;
+      }
+
+      if(status){ status.className="status show"; status.textContent=t.sending; }
+      if(submitBtn) submitBtn.disabled = true;
+
+      try{
+        const { error } = await sb.from("deal_expired_reports").insert({
+          deal_id: __expiredDealId,
+          reporter_email: email
+        });
+        if(error) throw error;
+
+        const dealObj = (Array.isArray(deals) ? deals.find(x => String(x?.id) === String(__expiredDealId)) : null);
+        const dLoc = dealObj ? localized(dealObj) : null;
+        const feedback = await __postFeedback({
+          email,
+          action: "report-expired",
+          opt_in: !!subCheck?.checked,
+          lang,
+          deal_id: __expiredDealId,
+          deal_slug: dealObj?.slug || "",
+          deal_title: dLoc?.title_t || "",
+        });
+
+        if(status){
+          let extra = "";
+          if(subCheck?.checked){
+            if(feedback.alreadySubscribed) extra = (lang==="vi" ? " (Bạn đã đăng ký rồi ✅)" : " (Already subscribed ✅)");
+            else if(feedback.subscriptionOk && feedback.subscribed) extra = (lang==="vi" ? " (Đăng ký nhận deal mỗi tối ✅)" : " (Subscribed ✅)");
+            else extra = (lang==="vi" ? " (Lưu report thành công, nhưng subscribe/email đang lỗi ⚠️)" : " (Report saved, but subscribe/email failed ⚠️)");
+          }else if(feedback.ok && !feedback.mailOk){
+            extra = (lang==="vi" ? " (Đã lưu report, nhưng email phản hồi chưa gửi được ⚠️)" : " (Report saved, but feedback email was not sent ⚠️)");
+          }
+          status.className="status show ok";
+          status.textContent = t.thanks + extra;
+        }
+
+        // update local stats for instant UI
+        if (typeof expiredStats === "object" && expiredStats) {
+          expiredStats[__expiredDealId] = expiredStats[__expiredDealId] || { report_count:0 };
+          expiredStats[__expiredDealId].report_count = Number(expiredStats[__expiredDealId].report_count||0) + 1;
+          expiredStats[__expiredDealId].last_report_at = new Date().toISOString();
+        }
+        if (typeof renderDeals === "function") renderDeals();
+        if (typeof renderPopular === "function") renderPopular();
+
+        if(input) input.value = "";
+        if(subCheck) subCheck.checked = false;
+        try{ localStorage.removeItem("expired_email"); }catch(_){}
+
+        setTimeout(()=>{ try{ window.__closeExpiredModal?.(); }catch(_){} }, 650);
+      }catch(e){
+        if(status){ status.className="status show err"; status.textContent=e?.message || t.fail; }
+      }finally{
+        if(submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    function bindExpiredButtons(container){
+      container.querySelectorAll("[data-expired-report]").forEach(btn=>{
+        btn.addEventListener("click",(e)=>{
+          e.preventDefault();
+          openExpiredModal(btn.dataset.expiredReport);
+        });
+      });
+    }
+
+function isExpiredDeal(d){
+      const exp = d.expires_at ? new Date(d.expires_at).getTime() : 0;
+      const expiredByDate = exp && exp < Date.now();
+
+      const stat = expiredStats?.[d.id];
+      const last = new Date(stat?.last_report_at || 0).getTime();
+      const cleared = new Date(d.expired_cleared_at || 0).getTime();
+
+      const expiredByReport = (Number(stat?.report_count || 0) > 0) && (last > cleared);
+      return expiredByDate || expiredByReport;
+    }
+
+        function renderPopular(){
+      const top = deals.slice().sort((a,b)=>Number(b.click_count||0)-Number(a.click_count||0)).slice(0,8);
+      if(!top.length){
+        el.popularList.innerHTML = `<div class="muted">No data</div>`;
+        return;
+      }
       el.popularList.innerHTML = top.map(item => {
         const d = localized(item);
+        const expired = isExpiredDeal(d);
+        const rs = reviewStats[d.id];
         return `
           <div class="popular-item">
-            <a class="popular-img"
-               href="${esc(d.affiliate_url)}"
-               data-track-link="1"
-               data-deal-id="${esc(d.id)}"
-               data-slug="${esc(d.slug)}"
-               data-source="popular_image">
-              <img src="${esc(d.image_url || "")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
+            <a class="popular-img" ${expired
+              ? `href="#" data-expired-block="1" data-expired-for="${esc(d.id)}"`
+              : `href="${esc(d.affiliate_url)}" target="_blank" rel="noopener noreferrer" data-track-link="1" data-deal-id="${esc(d.id)}" data-slug="${esc(d.slug)}" data-source="popular_image"`}>
+              <img loading="lazy" decoding="async" src="${esc(d.image_url||"")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
             </a>
             <div class="popular-info">
               <a class="popular-name" href="deal.html?slug=${encodeURIComponent(d.slug)}">${esc(d.title_t)}</a>
-              <div class="popular-price">${compactPriceHtml(d)}</div>
-              <div class="popular-meta">👁 ${Number(d.click_count || 0)} • 👍 ${Number(d.like_count || 0)}</div>
+              <div class="popular-price">${hasPrice(d.new_price)?money(d.new_price):""} ${hasPrice(d.old_price)?`<span>${money(d.old_price)}</span>`:""}</div>
+              <div class="popular-meta">${rs ? starsHtml(rs.avg_rating, rs.review_count) : `👁 ${Number(d.click_count||0)} • 👍 ${Number(d.like_count||0)}`}</div>
             </div>
           </div>
         `;
       }).join("");
-
       bindTrackLinks(el.popularList);
+      bindExpiredBlockLinks(el.popularList);
     }
 
-    function renderDeals() {
+    function renderDeals(){
       const t = I18N[lang];
       const rows = getFilteredDeals();
       el.dealCount.textContent = t.count(rows.length);
-      renderQuickGroups();
 
-      if (!rows.length) {
+      if(!rows.length){
         el.dealGrid.innerHTML = `<div class="empty">${esc(t.noDeals)}</div>`;
         return;
       }
@@ -564,54 +995,69 @@
         const d = localized(item);
         const pct = discountPct(d);
         const g = d.deal_group;
-        const gLabel = groupName(g, lang);
-        const gIcon = g?.icon || "📁";
         const showNew = isNewDeal(d);
-
+        const expired = isExpiredDeal(d);
+        const rs = reviewStats[d.id];
         return `
-          <article class="deal-card">
+          <article class="deal-card ${expired?"is-expired":""}">
             <div class="deal-thumb">
               <div class="badges">
-                <span class="badge">${esc((d.badge || "HOT").toUpperCase())}</span>
-                ${pct ? `<span class="badge danger">-${pct}%</span>` : ""}
-                ${showNew ? `<span class="chip new">NEW</span>` : ""}
-                ${d.promo_icon && d.promo_icon !== "none" ? `<span class="chip">${esc(d.promo_icon)}</span>` : ""}
+                <span class="badge">${esc((d.badge||"HOT").toUpperCase())}</span>
+                ${pct?`<span class="badge danger">-${pct}%</span>`:""}
+                ${showNew?`<span class="chip new">NEW</span>`:""}
+                ${d.promo_icon && d.promo_icon!=="none"?`<span class="chip">${esc(d.promo_icon)}</span>`:""}
+                ${expired?`<span class="chip expired">EXPIRED</span>`:""}
               </div>
 
-              <a href="${esc(d.affiliate_url)}"
-                 data-track-link="1"
-                 data-deal-id="${esc(d.id)}"
-                 data-slug="${esc(d.slug)}"
-                 data-source="card_image">
-                <img src="${esc(d.image_url || "")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
+                            ${expired?`<div class="expired-overlay">EXPIRED</div>`:""}
+
+              <a ${expired
+                 ? `href="#" class="expired-block-link" data-expired-block="1" data-expired-for="${esc(d.id)}"`
+                 : `href="${esc(d.affiliate_url)}" target="_blank" rel="noopener noreferrer" data-track-link="1" data-deal-id="${esc(d.id)}" data-slug="${esc(d.slug)}" data-source="card_image"`}>
+                <img loading="lazy" decoding="async" width="420" height="260"
+                     src="${esc(d.image_url||"")}" alt="${esc(d.title_t)}" onerror="this.src='./no-image.svg'">
               </a>
+
+                ${(hasPrice(d.new_price) || hasPrice(d.old_price) || pct) ? `
+                <div class="price-row">
+                  <div class="price-new">${hasPrice(d.new_price)?money(d.new_price):""}</div>
+                  <div class="price-old">${hasPrice(d.old_price)?money(d.old_price):""}</div>
+                  ${pct?`<div class="save-chip">-${pct}%</div>`:""}
+                </div>
+              ` : ""}   
+
+              <div class="reactions">
+                <button class="react-btn" data-react="1" data-vote="1" data-deal-id="${esc(d.id)}">👍 <span data-like-count>${Number(d.like_count||0)}</span></button>
+                <button class="react-btn" data-react="1" data-vote="-1" data-deal-id="${esc(d.id)}">👎 <span data-dislike-count>${Number(d.dislike_count||0)}</span></button>
+                <div class="react-btn static">👁 <span>${Number(d.click_count||0)}</span></div>
+              </div>
             </div>
 
             <div class="deal-body">
-              <div class="deal-meta-top">${esc(d.store || "")} • ${esc(gIcon)} ${esc(gLabel)}</div>
-              <h3 class="deal-title">${esc(d.title_t)}</h3>
-              <p class="deal-desc">${esc(d.short_t || "")}</p>
+              <div class="deal-meta-top">${esc(d.store||"")} • ${esc(g?.icon||"📁")} ${esc(groupName(g,lang))}</div>
+              <h3 class="deal-title">${expired?"❌ ":""}${esc(d.title_t)}</h3>
+
+              <div class="deal-rating-row">${starsHtml(rs?.avg_rating, rs?.review_count)}</div>
+
+              <p class="deal-desc">${esc(d.short_t||"")}</p>
 
               <div class="deal-dates">
-                ${d.starts_at ? `<div class="date-row"><span>${esc(t.start)}:</span> ${esc(formatDate(d.starts_at, lang))}</div>` : ""}
-                ${d.expires_at ? `<div class="date-row expire"><span>${esc(t.expire)}:</span> ${esc(formatDate(d.expires_at, lang))}</div>` : ""}
+                ${d.starts_at?`<div class="date-row"><span>${esc(t.start)}:</span> ${esc(formatDate(d.starts_at,lang))}</div>`:""}
+                ${d.expires_at?`<div class="date-row expire"><span>${esc(t.expire)}:</span> ${esc(formatDate(d.expires_at,lang))}</div>`:""}
               </div>
 
-              ${priceRowHtml(d, t)}
-
-              <div class="reactions">
-                <button class="react-btn" data-react="1" data-vote="1" data-deal-id="${esc(d.id)}">👍 <span data-like-count>${Number(d.like_count || 0)}</span></button>
-                <button class="react-btn" data-react="1" data-vote="-1" data-deal-id="${esc(d.id)}">👎 <span data-dislike-count>${Number(d.dislike_count || 0)}</span></button>
-                <div class="react-btn static">👁 <span>${Number(d.click_count || 0)}</span></div>
+              <div class="deal-note-highlight">
+                ⚠️ <b>Limited-time deal.</b> Price and availability may change without notice.
+                If the deal has expired or the price has changed, please click 
+                <button class="link-btn" data-expired-report="${esc(d.id)}" type="button">${esc(t.expiredBtn)}</button>.
+                to help keep the deal list accurate.
               </div>
 
               <div class="deal-actions">
                 <a class="btn primary action-btn"
-                   href="${esc(d.affiliate_url)}"
-                   data-track-link="1"
-                   data-deal-id="${esc(d.id)}"
-                   data-slug="${esc(d.slug)}"
-                   data-source="card_cta">${esc(t.view)}</a>
+                   ${expired
+                     ? `href="#" data-expired-block="1" data-expired-for="${esc(d.id)}"`
+                     : `href="${esc(d.affiliate_url)}" target="_blank" rel="noopener noreferrer" data-track-link="1" data-deal-id="${esc(d.id)}" data-slug="${esc(d.slug)}" data-source="card_cta"`}>${esc(t.view)}</a>
                 <a class="btn action-btn" href="deal.html?slug=${encodeURIComponent(d.slug)}">${esc(t.detail)}</a>
               </div>
             </div>
@@ -619,124 +1065,253 @@
         `;
       }).join("");
 
+      
       bindTrackLinks(el.dealGrid);
       bindReactionButtons(el.dealGrid);
+      bindExpiredButtons(el.dealGrid);
+      bindExpiredBlockLinks(el.dealGrid);
     }
 
-
-    function closeAlertModal() {
+    function closeAlertModal(){
       el.alertModal.classList.add("hidden");
-      el.alertModal.setAttribute("aria-hidden", "true");
+      el.alertModal.setAttribute("aria-hidden","true");
     }
-    function openAlertModal() {
+    function openAlertModal(){
       el.alertModal.classList.remove("hidden");
-      el.alertModal.setAttribute("aria-hidden", "false");
-      setTimeout(() => el.alertKeyword?.focus(), 10);
+      el.alertModal.setAttribute("aria-hidden","false");
+      setTimeout(()=>el.alertKeyword?.focus(),10);
     }
-    function saveAlertLocal(payload) {
-      let rows = [];
-      try { rows = JSON.parse(localStorage.getItem(LS_ALERTS) || "[]"); } catch { rows = []; }
-      rows.unshift(payload);
-      localStorage.setItem(LS_ALERTS, JSON.stringify(rows.slice(0, 500)));
-    }
-    async function saveAlertRequest(payload) {
-      try {
-        const { error } = await sb.from("deal_alerts").insert({
-          keyword: payload.keyword,
-          email: payload.email,
-          title: payload.keyword,
-          is_active: true
-        });
-        if (error) throw error;
-        return "db";
-      } catch (e) {
-        saveAlertLocal(payload);
-        return "local";
+
+    async function boot(){
+      try{
+        groups = await fetchGroups();
+        storesDb = await fetchStores();
+        deals = await fetchDeals(dealLimit);
+
+        const ids = deals.map(d=>d.id);
+        reviewStats = await fetchReviewStats(ids);
+        expiredStats = await fetchExpiredStats(ids);
+
+        applyI18n();
+        el.footerYear.textContent = String(new Date().getFullYear());
+      }catch(e){
+        el.dealGrid.innerHTML = `<div class="empty">Load failed: ${esc(e.message||"Unknown error")}</div>`;
       }
     }
 
-    async function boot() {
-      try {
-        groups = await fetchGroups();
-        deals = await fetchDeals();
-        applyI18n();
-      } catch (e) {
-        console.error(e);
-        el.dealGrid.innerHTML = `<div class="empty">Load failed: ${esc(e.message || "Unknown error")}</div>`;
+    async function loadMore(){
+      const t = I18N[lang];
+      el.loadMoreBtn.disabled = true;
+      el.loadMoreBtn.textContent = "Loading...";
+      try{
+        dealLimit += 60;
+        deals = await fetchDeals(dealLimit);
+
+        const ids = deals.map(d=>d.id);
+        reviewStats = await fetchReviewStats(ids);
+        expiredStats = await fetchExpiredStats(ids);
+
+        renderDeals();
+        renderPopular();
+        renderStoreFilter();
+
+        el.loadMoreBtn.textContent = t.loadMore;
+        el.loadMoreBtn.disabled = false;
+
+        if(deals.length < dealLimit){
+          el.loadMoreBtn.textContent = t.noMore;
+          el.loadMoreBtn.disabled = true;
+        }
+      }catch(e){
+        toast(e.message||"Load more failed", false);
+        el.loadMoreBtn.textContent = t.loadMore;
+        el.loadMoreBtn.disabled = false;
       }
     }
 
     // Events
     el.searchInput.addEventListener("input", renderDeals);
     el.groupFilter.addEventListener("change", renderDeals);
-
     el.storeFilter.addEventListener("change", renderDeals);
+    el.sortFilter.addEventListener("change", renderDeals);
+
+    el.langEnBtn.addEventListener("click", ()=>{ lang="en"; setLang(lang); applyI18n(); });
+    el.langViBtn.addEventListener("click", ()=>{ lang="vi"; setLang(lang); applyI18n(); });
 
     el.openAlertBtn.addEventListener("click", openAlertModal);
     el.closeAlertBtn.addEventListener("click", closeAlertModal);
-    el.alertModal.querySelectorAll("[data-alert-close='1']").forEach(x => x.addEventListener("click", closeAlertModal));
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !el.alertModal.classList.contains("hidden")) closeAlertModal();
-    });
+    el.alertModal.querySelectorAll("[data-alert-close='1']").forEach(x=>x.addEventListener("click", closeAlertModal));
+    document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && !el.alertModal.classList.contains("hidden")) closeAlertModal(); });
 
-    el.alertForm.addEventListener("submit", async (e) => {
+    el.alertForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
-      const keyword = (el.alertKeyword.value || "").trim();
-      const email = (el.alertEmail.value || "").trim();
-      const t = I18N[lang];
-
-      if (!keyword || !email) {
-        el.alertStatus.textContent = t.alertNeedFields;
+      const keyword = (el.alertKeyword.value||"").trim();
+      const email = (el.alertEmail.value||"").trim();
+      if(!keyword || !email){
+        el.alertStatus.textContent = (lang==="vi") ? "Vui lòng nhập keyword và email." : "Please enter keyword and email.";
         el.alertStatus.className = "status show err";
         return;
       }
-
-      try {
+      try{
         el.alertStatus.textContent = "Saving...";
         el.alertStatus.className = "status show";
-
-        const resp = await fetch("/api/alerts/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, keyword }),
+        const resp = await fetch("/api/alerts/subscribe",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ email, keyword })
         });
-
-        const data = await resp.json().catch(() => null);
-        if (!data || data.ok === false) {
+        const data = await resp.json().catch(()=>null);
+        if(!data || data.ok===false){
           const msg = data?.message || data?.detail || data?.error || "Subscribe failed";
           throw new Error(msg);
         }
-
-        // backend sẽ trả:
-        // - message: "Subscribe thành công!..."
-        // - hoặc "Bạn đã sub keyword này rồi."
         el.alertStatus.textContent = data.message || "Saved ✅";
         el.alertStatus.className = "status show ok";
-
         el.alertForm.reset();
-        setTimeout(() => {
-          el.alertStatus.classList.remove("show");
-          closeAlertModal();
-        }, 1200);
-      } catch (err) {
-        el.alertStatus.textContent = err.message || "Subscribe failed";
+        setTimeout(()=>{ el.alertStatus.classList.remove("show"); closeAlertModal(); }, 1200);
+      }catch(err){
+        el.alertStatus.textContent = err.message || "Save failed";
         el.alertStatus.className = "status show err";
       }
     });
 
-    if (el.footerYear) el.footerYear.textContent = new Date().getFullYear();
-
-    el.sortFilter.addEventListener("change", renderDeals);
-
-    el.langEnBtn.addEventListener("click", () => {
-      lang = "en"; setLang("en"); applyI18n();
-    });
-    el.langViBtn.addEventListener("click", () => {
-      lang = "vi"; setLang("vi"); applyI18n();
-    });
+    el.loadMoreBtn.addEventListener("click", loadMore);
 
     boot();
   </script>
-</body>
-</html>
+  
+  <div id="cookieConsent" class="cookie-banner">
+    <p>
+      We use cookies to improve your browsing experience, analyze site traffic,
+      and track affiliate commissions. By clicking <strong>Accept</strong>,
+      you consent to our use of cookies.
+    </p>
 
+    <div class="cookie-buttons">
+      <button id="acceptCookies">Accept</button>
+      <button id="declineCookies">Decline</button>
+      <a href="cookies-policy.html">Learn More</a>
+    </div>
+  </div>
+
+
+
+  <script>
+      (function () {
+        const cookieBox = document.getElementById("cookieConsent");
+        const acceptBtn = document.getElementById("acceptCookies");
+        const declineBtn = document.getElementById("declineCookies");
+
+        if (!cookieBox) return;
+
+        if (localStorage.getItem("cookieConsent")) {
+          cookieBox.style.display = "none";
+          return;
+        }
+
+        acceptBtn && (acceptBtn.onclick = function () {
+          localStorage.setItem("cookieConsent", "accepted");
+          cookieBox.style.display = "none";
+        });
+
+        declineBtn && (declineBtn.onclick = function () {
+          localStorage.setItem("cookieConsent", "declined");
+          cookieBox.style.display = "none";
+        });
+      })();
+  </script>
+
+  <!-- footer_i18n_v2 -->
+  <script>
+  (function(){
+    const FOOTER_I18N = {
+      en: {
+        links: {
+          "terms.html": "Terms and Conditions",
+          "privacy.html": "Privacy Policy",
+          "affiliate-disclosure.html": "Affiliate Disclosure",
+          "amazon-associate-disclosure.html": "Amazon Associate Disclosure",
+          "website-liability-shield.html": "Website Liability Shield",
+          "email-disclaimer.html": "Email Disclaimer",
+          "disclaimer.html": "Disclaimer",
+          "cookies-policy.html": "Cookies Policy",
+          "dmca.html": "DMCA",
+          "trademark-disclaimer.html": "Trademark Disclaimer",
+          "contact.html": "Contact"
+        },
+        highlights: [
+          'As an Amazon Associate, <strong>usdeals4you.com</strong> earns from qualifying purchases.',
+          '<strong>usdeals4you.com</strong> is an independent deal-sharing website. We may earn commissions from affiliate links, but we are not affiliated with, endorsed by, or sponsored by any retailer or brand unless explicitly stated.'
+        ]
+      },
+      vi: {
+        links: {
+          "terms.html": "Điều khoản & Điều kiện",
+          "privacy.html": "Chính sách quyền riêng tư",
+          "affiliate-disclosure.html": "Tiết lộ liên kết tiếp thị",
+          "amazon-associate-disclosure.html": "Tiết lộ Amazon Associate",
+          "website-liability-shield.html": "Miễn trừ trách nhiệm website",
+          "email-disclaimer.html": "Miễn trừ trách nhiệm email",
+          "disclaimer.html": "Tuyên bố miễn trừ trách nhiệm",
+          "cookies-policy.html": "Chính sách Cookies",
+          "dmca.html": "Chính sách DMCA",
+          "trademark-disclaimer.html": "Miễn trừ thương hiệu",
+          "contact.html": "Liên hệ"
+        },
+        highlights: [
+          'Là đối tác Amazon Associate, <strong>usdeals4you.com</strong> có thể nhận hoa hồng từ các đơn hàng đủ điều kiện.',
+          '<strong>usdeals4you.com</strong> là website chia sẻ deal độc lập. Chúng tôi có thể nhận hoa hồng từ liên kết tiếp thị (affiliate), nhưng không liên kết, không được bảo trợ hay chứng thực bởi bất kỳ nhà bán lẻ hoặc thương hiệu nào, trừ khi có ghi rõ.'
+        ]
+      }
+    };
+
+    function safeGetLang(){
+       try { return (sessionStorage.getItem("lang") || sessionStorage.getItem("deal_lang_v1") || "en").toLowerCase(); }
+       catch(e){ return "en"; }
+     }
+
+    function safeSetLang(lang){
+       const v = (String(lang||"").toLowerCase() === "vi") ? "vi" : "en";
+       try { sessionStorage.setItem("lang", v); } catch(e){}
+       try { sessionStorage.setItem("deal_lang_v1", v); } catch(e){}
+       try { localStorage.removeItem("lang"); } catch(e){}
+       try { localStorage.removeItem("deal_lang_v1"); } catch(e){}
+       try { document.documentElement.setAttribute("lang", v); } catch(e){}
+     }
+
+    function applyFooterLang(lang){
+      const dict = FOOTER_I18N[lang] || FOOTER_I18N.en;
+
+      document.querySelectorAll(".footer-links a").forEach(a=>{
+        const hrefRaw = (a.getAttribute("href") || "").trim();
+        const href = hrefRaw.split("#")[0];
+        const label = dict.links[href];
+        if(label) a.textContent = label;
+      });
+
+      const hs = document.querySelectorAll(".footer-highlight");
+      if(hs && hs.length){
+        if(hs[0] && dict.highlights[0]) hs[0].innerHTML = dict.highlights[0];
+        if(hs[1] && dict.highlights[1]) hs[1].innerHTML = dict.highlights[1];
+      }
+    }
+
+    function setLangAndApply(lang){
+      safeSetLang(lang);
+      applyFooterLang(lang);
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const current = safeGetLang();
+      applyFooterLang(current);
+      safeSetLang(current);
+
+      const enBtn = document.getElementById("langEnBtn");
+      const viBtn = document.getElementById("langViBtn");
+      if(enBtn) enBtn.addEventListener("click", ()=>setLangAndApply("en"));
+      if(viBtn) viBtn.addEventListener("click", ()=>setLangAndApply("vi"));
+    });
+  })();
+  </script>
+  </body>
+</html>

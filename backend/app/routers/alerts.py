@@ -111,6 +111,280 @@ def build_welcome_email_html(email: str, keyword: str, unsubscribe_token: str) -
     """
 
 
+def deal_view_url(deal_slug: Optional[str], deal_id: Optional[str]) -> str:
+    base = site_base_url()
+    slug = (deal_slug or "").strip()
+    if slug:
+        return f"{base}/deal.html?slug={slug}"
+    did = (deal_id or "").strip()
+    if did:
+        return f"{base}/deal.html?id={did}"
+    return f"{base}/index.html"
+
+
+def _is_vi(lang: Optional[str]) -> bool:
+    return (lang or "").strip().lower().startswith("vi")
+
+
+def build_feedback_email_html(
+    *,
+    lang: Optional[str],
+    email: str,
+    action: str,
+    deal_title: str,
+    deal_url: str,
+    opted_in: bool,
+    newly_subscribed: bool,
+    already_subscribed: bool,
+    unsubscribe_url: Optional[str],
+    rating: Optional[int] = None,
+    comment: Optional[str] = None,
+) -> str:
+    vi = _is_vi(lang)
+    safe_title = (deal_title or "").strip() or ("deal này" if vi else "this deal")
+
+    if action == "report-expired":
+        h = "Cảm ơn bạn đã báo deal hết hạn ✅" if vi else "Thanks for reporting an expired deal ✅"
+    else:
+        h = "Cảm ơn bạn đã đánh giá deal ✅" if vi else "Thanks for your review ✅"
+
+    intro_lines: List[str] = []
+
+    if opted_in:
+        if newly_subscribed:
+            intro_lines.append(
+                ("<b>Chúc mừng!</b> Bạn đã đăng ký nhận deal thành công. "
+                 "Bạn sẽ nhận được <b>deal mới vào mỗi buổi tối</b>. 🎉"
+                 if vi else
+                 "<b>Congratulations!</b> Your daily deals subscription is confirmed. "
+                 "You’ll receive <b>new deals every evening</b>. 🎉")
+            )
+            intro_lines.append(
+                ("Cảm ơn bạn đã tham gia cộng đồng săn deal của chúng tôi! 🙌"
+                 if vi else
+                 "Thanks for joining our deal-hunting community! 🙌")
+            )
+        elif already_subscribed:
+            intro_lines.append(
+                ("Bạn đã đăng ký nhận deal rồi ✅ Chúng tôi sẽ vẫn gửi deal mới mỗi buổi tối."
+                 if vi else
+                 "You’re already subscribed ✅ We’ll keep sending new deals every evening.")
+            )
+
+    if action == "report-expired":
+        intro_lines.append(
+            (f'Cảm ơn bạn đã báo deal hết hạn: <b>{safe_title}</b>.<br/>'
+             f'Chúng tôi sẽ xem xét lại và kiểm tra để <b>gỡ khỏi danh sách</b> nếu không còn hợp lệ.'
+             if vi else
+             f'Thanks for reporting an expired deal: <b>{safe_title}</b>.<br/>'
+             f'We’ll review it and <b>remove it from the list</b> if it’s no longer valid.')
+        )
+    else:
+        stars = ""
+        if isinstance(rating, int) and 1 <= rating <= 5:
+            stars = " " + ("★" * rating) + ("☆" * (5 - rating))
+        intro_lines.append(
+            (f'Cảm ơn bạn đã đánh giá <b>{safe_title}</b>.{stars}'
+             if vi else
+             f'Thanks for your review on <b>{safe_title}</b>.{stars}')
+        )
+        cmt = (comment or "").strip()
+        if cmt:
+            intro_lines.append(
+                (f'<div style="margin-top:8px;color:#666">Nội dung: “{cmt}”</div>'
+                 if vi else
+                 f'<div style="margin-top:8px;color:#666">Comment: “{cmt}”</div>')
+            )
+
+    cta_text = "Xem deal" if vi else "View deal"
+    cta = f'<a href="{deal_url}" style="display:inline-block;padding:10px 14px;border-radius:12px;background:#111;color:#fff;text-decoration:none">{cta_text}</a>'
+
+    unsub = ""
+    if opted_in and unsubscribe_url:
+        unsub = (
+            f'<div style="margin-top:14px;color:#666">'
+            f'Bạn có thể hủy nhận email bất cứ lúc nào: <a href="{unsubscribe_url}">Unsubscribe</a>'
+            f'</div>'
+            if vi else
+            f'<div style="margin-top:14px;color:#666">'
+            f'Unsubscribe anytime: <a href="{unsubscribe_url}">Unsubscribe</a>'
+            f'</div>'
+        )
+
+    body = "<br/>".join([x for x in intro_lines if x])
+    greet = "Chào" if vi else "Hi"
+
+    return f"""
+    <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55">
+      <h2 style="margin:0 0 10px 0">{h}</h2>
+      <div style="color:#666;margin:0 0 14px 0">{greet} <b>{email}</b> 👋</div>
+      <div style="color:#333;margin:0 0 14px 0">{body}</div>
+      <div style="margin:14px 0">{cta}</div>
+      {unsub}
+      <hr style="border:none;border-top:1px solid #eee;margin:18px 0"/>
+      <div style="color:#999;font-size:12px">© {datetime.now().year} BestDeals</div>
+    </div>
+    """
+
+
+class FeedbackPayload(BaseModel):
+    email: str
+    action: str  # "report-expired" | "submit-review"
+    opt_in: bool = False
+    lang: Optional[str] = None
+    deal_id: Optional[str] = None
+    deal_slug: Optional[str] = None
+    deal_title: Optional[str] = None
+    rating: Optional[int] = None
+    comment: Optional[str] = None
+
+
+def _get_subscription_row(email_normed: str, keyword_normed: str) -> Optional[dict]:
+    rows = (
+        supabase.table("deal_alert_subscriptions")
+        .select("id,email,email_norm,keyword,keyword_norm,verified,is_active,unsubscribe_token")
+        .eq("email_norm", email_normed)
+        .eq("keyword_norm", keyword_normed)
+        .limit(1)
+        .execute()
+        .data
+        or []
+    )
+    if rows:
+        return rows[0]
+
+    rows2 = (
+        supabase.table("deal_alert_subscriptions")
+        .select("id,email,keyword,verified,is_active,unsubscribe_token")
+        .eq("email", email_normed)
+        .eq("keyword", keyword_normed)
+        .limit(1)
+        .execute()
+        .data
+        or []
+    )
+    return rows2[0] if rows2 else None
+
+
+def _ensure_daily_subscription(email: str) -> Dict[str, Any]:
+    """Ensure the special 'hidden-deals' subscription exists (used for daily deals opt-in)."""
+    email_n = norm_email(email)
+    kw = "hidden-deals"
+    kw_n = norm_keyword(kw)
+
+    row = _get_subscription_row(email_n, kw_n)
+    if row:
+        if row.get("is_active") is False:
+            supabase.table("deal_alert_subscriptions").update({"is_active": True, "verified": True}).eq("id", row["id"]).execute()
+        return {"already": True,
+            "already_subscribed": True, "row": row, "keyword": kw}
+
+    unsubscribe_token = make_token(24)
+    verified = True
+
+    insert_row = {
+        "email": email,
+        "keyword": kw,
+        "category_id": None,
+        "is_active": True,
+        "verified": verified,
+        "verify_token": None,
+        "unsubscribe_token": unsubscribe_token,
+        "created_at": now_utc().isoformat(),
+    }
+    created = supabase.table("deal_alert_subscriptions").insert(insert_row).execute().data or []
+    new_row = created[0] if created else {"unsubscribe_token": unsubscribe_token}
+    return {"already": False,
+        "already_subscribed": False, "row": new_row, "keyword": kw}
+
+
+@router.post("/feedback")
+def feedback(payload: FeedbackPayload) -> Dict[str, Any]:
+    """
+    Sends user-facing emails for:
+      - report-expired
+      - submit-review
+    Optionally (opt_in=true): subscribe user to daily deals (keyword 'hidden-deals').
+    Never raises on email-provider failure; returns diagnostic flags for the UI.
+    """
+    email = (payload.email or "").strip()
+    if not email or not EMAIL_RE.match(email):
+        raise HTTPException(status_code=400, detail="Invalid email")
+
+    action = (payload.action or "").strip().lower()
+    if action not in ("report-expired", "submit-review"):
+        raise HTTPException(status_code=400, detail="Invalid action")
+
+    lang = (payload.lang or "").strip().lower() or "en"
+    deal_title = (payload.deal_title or "").strip()
+    deal_url = deal_view_url(payload.deal_slug, payload.deal_id)
+
+    opted_in = bool(payload.opt_in)
+    newly_subscribed = False
+    already_subscribed = False
+    unsubscribe_url = None
+    subscription_ok = True
+    subscription_error = None
+
+    if opted_in:
+        try:
+            sub_rs = _ensure_daily_subscription(email)
+            already_subscribed = bool(sub_rs.get("already"))
+            newly_subscribed = not already_subscribed
+            unsub_token = (sub_rs.get("row") or {}).get("unsubscribe_token")
+            if unsub_token:
+                unsubscribe_url = f"{site_base_url()}/api/alerts/unsubscribe?token={unsub_token}"
+        except Exception as e:
+            subscription_ok = False
+            subscription_error = str(e)
+
+    vi = _is_vi(lang)
+    if action == "report-expired":
+        subject = ("✅ BestDeals — Đăng ký thành công" if (opted_in and newly_subscribed and vi)
+                   else "✅ BestDeals — Subscription confirmed" if (opted_in and newly_subscribed and not vi)
+                   else "✅ BestDeals — Cảm ơn bạn đã báo deal" if vi
+                   else "✅ BestDeals — Thanks for the report")
+    else:
+        subject = ("✅ BestDeals — Đăng ký thành công" if (opted_in and newly_subscribed and vi)
+                   else "✅ BestDeals — Subscription confirmed" if (opted_in and newly_subscribed and not vi)
+                   else "✅ BestDeals — Cảm ơn bạn đã đánh giá" if vi
+                   else "✅ BestDeals — Thanks for your review")
+
+    html = build_feedback_email_html(
+        lang=lang,
+        email=email,
+        action=action,
+        deal_title=deal_title,
+        deal_url=deal_url,
+        opted_in=opted_in and subscription_ok,
+        newly_subscribed=newly_subscribed,
+        already_subscribed=already_subscribed,
+        unsubscribe_url=unsubscribe_url,
+        rating=payload.rating,
+        comment=payload.comment,
+    )
+
+    mail_result = None
+    try:
+        mail_result = send_email(email, subject, html)
+    except Exception as e:
+        mail_result = {"ok": False, "error": str(e)}
+
+    if not isinstance(mail_result, dict):
+        mail_result = {"ok": False, "error": "Invalid mail result"}
+
+    return {
+        "ok": True,
+        "action": action,
+        "opt_in": opted_in,
+        "subscribed": bool(opted_in and subscription_ok),
+        "already_subscribed": bool(already_subscribed),
+        "subscription_ok": subscription_ok,
+        "subscription_error": subscription_error,
+        "mail_ok": bool(mail_result.get("ok")),
+        "mail": mail_result,
+    }
+
 def build_admin_broadcast_html(body_html: str, image_url: Optional[str]) -> str:
     img = f'<p><img src="{image_url}" alt="image" style="max-width:100%;border-radius:12px"/></p>' if image_url else ""
     return f"""
@@ -129,6 +403,13 @@ class SubscribePayload(BaseModel):
     email: str
     keyword: str
     category_id: Optional[str] = None
+    # Optional context (used by frontend modals). Ignored by /subscribe logic.
+    source: Optional[str] = None
+    lang: Optional[str] = None
+    deal_id: Optional[str] = None
+    deal_slug: Optional[str] = None
+    deal_title: Optional[str] = None
+    skip_if_exists: Optional[bool] = None
 
 
 class BroadcastPayload(BaseModel):

@@ -1,8 +1,13 @@
 # backend/app/routers/admin_mail.py
+#
+# v2 (diagnostic + more robust admin check)
+# - Adds GET /api/admin/mail/whoami (requires valid Supabase access token, NOT admin)
+# - Admin check returns 500 on Supabase query errors (instead of masking as 403)
+# - Admin check tries both supabase-py and direct PostgREST call (service_role)
 
 import os
 import requests
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 
@@ -12,23 +17,21 @@ from app.services.email_service import send_email
 router = APIRouter(prefix="/api/admin/mail", tags=["admin-mail"])
 
 SUPABASE_URL = (os.getenv("SUPABASE_URL") or "").rstrip("/")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or ""
+SUPABASE_SERVICE_ROLE_KEY = (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or "").strip()
 
-if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
-    # supabase_client.py đã raise rồi, nhưng thêm cho rõ
-    pass
+
+def _require_env():
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        raise HTTPException(status_code=500, detail="Server misconfigured: missing SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY")
 
 
 # -------------------------
 # Auth helpers (Supabase JWT)
 # -------------------------
 def _get_user_from_token(access_token: str) -> dict:
-    """
-    Validate Supabase access token by calling Supabase Auth endpoint.
-    Returns user dict if valid.
-    """
     if not access_token:
         raise HTTPException(status_code=401, detail="Missing access token")
+    _require_env()
 
     url = f"{SUPABASE_URL}/auth/v1/user"
     headers = {
@@ -41,11 +44,59 @@ def _get_user_from_token(access_token: str) -> dict:
     return r.json()
 
 
+def _admin_check_supabase_py(uid: str) -> Tuple[Optional[bool], Optional[str]]:
+    try:
+        res = supabase.table("admins").select("user_id").eq("user_id", uid).limit(1).execute()
+        err = getattr(res, "error", None)
+        if err:
+            return None, f"supabase-py error: {err}"
+        data = getattr(res, "data", None) or []
+        return (len(data) > 0), None
+    except Exception as e:
+        return None, f"supabase-py exception: {e}"
+
+
+def _admin_check_postgrest(uid: str) -> Tuple[Optional[bool], Optional[str]]:
+    try:
+        _require_env()
+        url = f"{SUPABASE_URL}/rest/v1/admins"
+        params = {"select": "user_id", "user_id": f"eq.{uid}", "limit": "1"}
+        headers = {
+            "apikey": SUPABASE_SERVICE_ROLE_KEY,
+            "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        }
+        r = requests.get(url, params=params, headers=headers, timeout=15)
+        if r.status_code != 200:
+            return None, f"postgrest HTTP {r.status_code}: {r.text[:300]}"
+        rows = r.json() if r.text else []
+        return (len(rows) > 0), None
+    except Exception as e:
+        return None, f"postgrest exception: {e}"
+
+
+def _is_admin(uid: str) -> Tuple[bool, Optional[str]]:
+    # 1) supabase-py
+    ok1, err1 = _admin_check_supabase_py(uid)
+    if ok1 is True:
+        return True, None
+    # if supabase-py errored, keep note and try PostgREST
+    ok2, err2 = _admin_check_postgrest(uid)
+    if ok2 is True:
+        return True, None
+
+    # If either path produced a real error, surface it as 500 so you know what to fix.
+    # Otherwise it's a real "not admin" case -> 403.
+    errors = []
+    if err1:
+        errors.append(err1)
+    if err2:
+        errors.append(err2)
+    if errors:
+        return False, " | ".join(errors)
+    return False, None
+
+
 def _require_admin(authorization: Optional[str]) -> dict:
-    """
-    Requires: Authorization: Bearer <access_token>
-    Checks Supabase user + admins table.
-    """
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Missing Authorization Bearer token")
 
@@ -55,9 +106,13 @@ def _require_admin(authorization: Optional[str]) -> dict:
     if not uid:
         raise HTTPException(status_code=401, detail="Invalid token user")
 
-    # check admin
-    res = supabase.table("admins").select("user_id").eq("user_id", uid).limit(1).execute()
-    if not res.data:
+    ok, err = _is_admin(uid)
+    if err:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Admin check failed on server. Likely wrong SUPABASE_URL/key on Render. Details: {err}",
+        )
+    if not ok:
         raise HTTPException(status_code=403, detail="Admin access required")
 
     return {"user": user, "uid": uid}
@@ -67,16 +122,10 @@ def _require_admin(authorization: Optional[str]) -> dict:
 # Models
 # -------------------------
 class SendEmailPayload(BaseModel):
-    # send single (optional)
     to_email: Optional[str] = None
-
-    # send all verified/active (optional)
     send_all: bool = False
-
     subject: str
     message_html: str
-
-    # optional image URL
     image_url: Optional[str] = None
 
 
@@ -85,14 +134,36 @@ class DeleteSubscriberPayload(BaseModel):
 
 
 # -------------------------
+# Debug endpoint
+# -------------------------
+@router.get("/whoami")
+def whoami(authorization: Optional[str] = Header(default=None)):
+    """Helps confirm what the backend sees (useful on Render)."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(status_code=401, detail="Missing Authorization Bearer token")
+
+    token = authorization.split(" ", 1)[1].strip()
+    user = _get_user_from_token(token)
+    uid = user.get("id")
+
+    ok, err = _is_admin(uid) if uid else (False, "missing uid")
+    return {
+        "ok": True,
+        "email": user.get("email"),
+        "uid": uid,
+        "is_admin": bool(ok),
+        "admin_check_error": err,
+        "supabase_url": SUPABASE_URL,
+    }
+
+
+# -------------------------
 # Endpoints
 # -------------------------
-
 @router.get("/subscribers")
 def list_subscribers(authorization: Optional[str] = Header(default=None)):
     _require_admin(authorization)
 
-    # list distinct emails from subscriptions
     rows = (
         supabase.table("deal_alert_subscriptions")
         .select("email,email_norm,verified,is_active,created_at,keyword")
@@ -104,7 +175,6 @@ def list_subscribers(authorization: Optional[str] = Header(default=None)):
         or []
     )
 
-    # build map by email
     agg = {}
     for r in rows:
         em = (r.get("email_norm") or r.get("email") or "").strip().lower()
@@ -121,10 +191,8 @@ def list_subscribers(authorization: Optional[str] = Header(default=None)):
         kw = (r.get("keyword") or "").strip()
         if kw:
             agg[em]["keywords"].add(kw)
-        # keep newest created_at
         if r.get("created_at") and (agg[em]["created_at"] is None or r["created_at"] > agg[em]["created_at"]):
             agg[em]["created_at"] = r["created_at"]
-        # verified flag
         if r.get("verified"):
             agg[em]["verified_any"] = True
 
@@ -138,9 +206,7 @@ def list_subscribers(authorization: Optional[str] = Header(default=None)):
             "created_at": v["created_at"],
         })
 
-    # sort newest
     items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
-
     return {"ok": True, "count": len(items), "items": items}
 
 
@@ -153,7 +219,6 @@ def delete_subscriber(payload: DeleteSubscriberPayload, authorization: Optional[
     if not email or "@" not in email:
         raise HTTPException(status_code=400, detail="Invalid email")
 
-    # Delete ALL subscription rows for this email (all keywords, any status)
     rows1 = (
         supabase.table("deal_alert_subscriptions")
         .select("id")
@@ -189,11 +254,9 @@ def send_manual_email(payload: SendEmailPayload, authorization: Optional[str] = 
 
     subject = (payload.subject or "").strip()
     html = (payload.message_html or "").strip()
-
     if not subject or not html:
         return {"ok": False, "message": "Missing subject or message_html"}
 
-    # optional image
     if payload.image_url:
         img = payload.image_url.strip()
         if img:
@@ -209,7 +272,6 @@ def send_manual_email(payload: SendEmailPayload, authorization: Optional[str] = 
     recipients: List[str] = []
 
     if payload.send_all:
-        # send to distinct verified+active emails
         rows = (
             supabase.table("deal_alert_subscriptions")
             .select("email_norm,email,verified,is_active")
@@ -234,7 +296,6 @@ def send_manual_email(payload: SendEmailPayload, authorization: Optional[str] = 
 
     sent = 0
     failed = []
-
     for to in recipients:
         rs = send_email(to, subject, html)
         if rs.get("ok"):

@@ -1,5 +1,7 @@
 import os
 import sys
+import html
+import re
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
@@ -20,9 +22,12 @@ from app.services.email_service import send_email
 # =========================
 
 LOOKBACK_HOURS = int(os.getenv("DAILY_DEALS_LOOKBACK_HOURS", os.getenv("ALERT_LOOKBACK_HOURS", "24")))
-DAILY_SUBJECT = os.getenv("DAILY_DEALS_SUBJECT", "BestDeals: Today's new deals")
+DAILY_SUBJECT = os.getenv("DAILY_DEALS_SUBJECT", "BestDeals — New deals tonight | Deal mới tối nay")
 SITE_BASE = os.getenv("PUBLIC_BASE_URL", "https://bestdeals.ddns.net").rstrip("/")
 MAX_DEALS_PER_EMAIL = int(os.getenv("DAILY_DEALS_MAX", "30"))
+
+def esc_html(s: str) -> str:
+    return html.escape((s or "").strip(), quote=True)
 
 
 def now_utc():
@@ -75,15 +80,32 @@ def deal_view_url(d: dict) -> str:
 
 
 def deal_item_html(d: dict) -> str:
-    title = (d.get("title") or "Deal").strip()
+    title = esc_html(d.get("title") or "Deal")
+    store = esc_html(d.get("store") or "")
+    desc = (d.get("description") or "").strip()
+    desc = re.sub(r"\s+", " ", desc)
+    desc_short = esc_html(desc[:160] + ("…" if len(desc) > 160 else "")) if desc else ""
     url = deal_view_url(d)
 
-    # "Title + View Deal" on the same row (as requested)
+    store_badge = (
+        f"""<span style="display:inline-block;background:#eef2ff;color:#3730a3;
+        padding:2px 8px;border-radius:999px;font-size:12px;margin-left:8px;vertical-align:middle">{store}</span>"""
+        if store else ""
+    )
+
+    desc_block = (
+        f"""<div style="color:#6b7280;font-size:13px;margin-top:6px">{desc_short}</div>"""
+        if desc_short else ""
+    )
+
     return f"""
       <tr>
-        <td style="padding:10px 8px;border-bottom:1px solid #eee;font-weight:600">{title}</td>
-        <td style="padding:10px 8px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">
-          <a href="{url}" style="display:inline-block;padding:8px 12px;border-radius:10px;background:#111;color:#fff;text-decoration:none">
+        <td style="padding:14px 12px;border-bottom:1px solid #eef2f7">
+          <div style="font-weight:700;font-size:15px;color:#111827;line-height:1.25">{title}{store_badge}</div>
+          {desc_block}
+        </td>
+        <td style="padding:14px 12px;border-bottom:1px solid #eef2f7;text-align:right;white-space:nowrap">
+          <a href="{url}" style="display:inline-block;padding:10px 14px;border-radius:12px;background:#111827;color:#ffffff;text-decoration:none;font-weight:700;font-size:13px">
             View deal
           </a>
         </td>
@@ -92,50 +114,89 @@ def deal_item_html(d: dict) -> str:
 
 
 def build_daily_email_html(email: str, keywords: list[str], deals: list[dict]) -> str:
-    kw_line = ", ".join([k for k in keywords if k]) if keywords else "(chưa có keyword)"
+    greeting_email = esc_html(email)
 
-    intro = f"""
-      <div style="color:#444;margin:0 0 12px 0">
-        Bạn đã đăng ký <b>Alert theo keyword</b>: <b>{kw_line}</b>.<br/>
-        Nếu có deal <b>match keyword</b>, hệ thống sẽ <b>gửi email ngay</b> ✅<br/>
-        Nếu chưa match keyword thì bạn cứ chờ — khi có match sẽ gửi liền cho bạn.
-      </div>
-      <div style="margin:0 0 14px 0">
-        Hôm nay chúng tôi đang có <b>{len(deals)}</b> deal mới (trong {LOOKBACK_HOURS} giờ gần nhất). Mời bạn ghé thăm:
-      </div>
-    """
+    count = len(deals)
+    hours = LOOKBACK_HOURS
 
     rows = "".join(deal_item_html(d) for d in deals[:MAX_DEALS_PER_EMAIL])
 
     more = ""
     if len(deals) > MAX_DEALS_PER_EMAIL:
         more = f"""
-          <div style="margin-top:12px;color:#666">
-            (Còn {len(deals) - MAX_DEALS_PER_EMAIL} deal nữa) — xem tất cả tại:
-            <a href="{SITE_BASE}/index.html">{SITE_BASE}/index.html</a>
+          <div style="margin-top:14px;color:#6b7280;font-size:13px">
+            + {len(deals) - MAX_DEALS_PER_EMAIL} more deals are available.
+            <a href="{SITE_BASE}/index.html" style="color:#2563eb;text-decoration:none;font-weight:700">Browse all deals</a>
           </div>
         """
 
-    footer = f"""
-      <hr style="border:none;border-top:1px solid #eee;margin:18px 0"/>
-      <div style="color:#888;font-size:12px">
-        Bạn nhận email này vì đã subscribe deal alerts tại {SITE_BASE}.<br/>
-        Nếu muốn dừng nhận email, bạn có thể unsubscribe trong email keyword-alert hoặc liên hệ admin.
+
+    manage_links = f"""
+      <div style="margin-top:14px">
+        <a href="{SITE_BASE}/index.html" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;
+          padding:12px 16px;border-radius:14px;font-weight:800">Browse all deals</a>
+        <span style="display:inline-block;width:10px"></span>
+        <a href="{SITE_BASE}/index.html#alert" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;
+          padding:12px 16px;border-radius:14px;font-weight:800">Manage alerts</a>
       </div>
     """
 
+
+    en_intro = f"""
+      <h2 style="margin:0 0 6px 0;font-size:20px;line-height:1.25;color:#111827">BestDeals — Tonight’s New Deals</h2>
+      <div style="color:#6b7280;font-size:14px;margin:0 0 14px 0">Hi <b>{greeting_email}</b>,</div>
+      <div style="color:#374151;font-size:14px;margin:0 0 14px 0">
+        Here are <b>{count}</b> new deals we found in the last <b>{hours} hours</b>.
+        Tap <b>View deal</b> to see details.
+      </div>
+    """
+
+
+    vi_intro = f"""
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:18px 0"/>
+      <h2 style="margin:0 0 6px 0;font-size:18px;line-height:1.25;color:#111827">BestDeals — Deal mới tối nay</h2>
+      <div style="color:#6b7280;font-size:14px;margin:0 0 14px 0">Chào <b>{greeting_email}</b>,</div>
+      <div style="color:#374151;font-size:14px;margin:0 0 14px 0">
+        Đây là <b>{count}</b> deal mới trong <b>{hours} giờ</b> gần nhất.
+        Nhấn <b>View deal</b> để xem chi tiết.
+      </div>
+    """
+
+
+    year = datetime.now().year
+    footer = f"""
+      <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0"/>
+      <div style="color:#9ca3af;font-size:12px;line-height:1.5">
+        <div><b>EN:</b> You’re receiving this email because you opted in to BestDeals email updates. If you’d like to stop receiving emails, please unsubscribe from any alert email you received, or contact our support.</div>
+        <div style="margin-top:8px"><b>VI:</b> Bạn nhận email này vì đã đăng ký nhận cập nhật từ BestDeals. Nếu muốn dừng nhận email, bạn có thể bấm Unsubscribe trong các email alert trước đó, hoặc liên hệ hỗ trợ.</div>
+        <div style="margin-top:10px">© {year} BestDeals • <a href="{SITE_BASE}" style="color:#9ca3af;text-decoration:none">{SITE_BASE}</a></div>
+      </div>
+    """
+
+
     return f"""
-      <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.45">
-        <h2 style="margin:0 0 10px 0">🛍️ BestDeals - Deal mới trong ngày</h2>
-        <div style="color:#666;margin:0 0 14px 0">Chào <b>{email}</b> 👋</div>
-        {intro}
-        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-        {more}
-        {footer}
+      <div style="background:#f6f7fb;padding:22px 10px">
+        <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #eef2f7;border-radius:18px;overflow:hidden">
+          <div style="padding:18px 18px 6px 18px">
+            {en_intro}
+            {manage_links}
+          </div>
+          <div style="padding:0 18px 10px 18px">
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+              <tbody>
+                {rows}
+              </tbody>
+            </table>
+            {more}
+          </div>
+          <div style="padding:0 18px 6px 18px">
+            {vi_intro}
+            {manage_links}
+          </div>
+          <div style="padding:0 18px 18px 18px">
+            {footer}
+          </div>
+        </div>
       </div>
     """
 

@@ -1,11 +1,14 @@
 .
   .DS_Store
   frontend
+    logo_icon_footer.png
     favicon.ico
     index.html
     .DS_Store
+    affiliate-disclosure.html
     admin.html
     styles.css
+    contact.html
     images
       coffee-maker.jpg
       .DS_Store
@@ -15,7 +18,21 @@
       app-common.js
       supabase-config.js
     no-image.svg
+    disclaimer.html
+    terms.html
+    admin
+      index.html
+    _headers
+    logo.png
     deal.html
+    .wrangler
+      .DS_Store
+      cache
+        pages.json
+        wrangler-account.json
+      tmp
+    sw.js
+    privacy.html
   backend
     .DS_Store
     app
@@ -24,8 +41,8 @@
         .DS_Store
         admin_mail.py
         __pycache__
-        alerts copy.py
-        admin_mail copy.py
+        cron_jobs.py.save
+        cron_jobs.py
         status.py
       .DS_Store
       __pycache__
@@ -35,13 +52,20 @@
         __pycache__
         email_service.py
         supabase_client.py
+    requirements.txt
     logs
       email_alerts.out.log
+      daily_deals.out.log
       email_alerts.err.log
+      daily_deals.err.log
     .env
     run_backend.sh
     workers
+      daily_deals_digest-copy.py
+      daily_deals_digest.py
+      .DS_Store
       __pycache__
+        daily_deals_digest.cpython-314.pyc
         email_alerts.cpython-314.pyc
       email_alerts.py
     venv
@@ -75,4 +99,287 @@
       lib
         .DS_Store
         python3.14
+  .gitignore
+  .git
+    config
+    objects
+      61
+        f9e75b6d3f0376ac3a46d2a657c029b272ba41
+        841cb01be1401e3cea4c7d6307d6b4421e708f
+      50
+        08ddfcf53c02e82d7eee2e57c38e5672ef89f6
+        be08caa576d8db9326be5124470594ce53fc06
+        8885ffdebba3df59d0a57741d88e0d5417bfc6
+      57
+        207cdcfc91710641173bbe5c11be35d4df7af9
+      9e
+        216211238a6012194f748ecd3ceab03ae6afb7
+      6a
+        24ae4d039166c69cef8f209f2eec56e94ad6f0
+      69
+        5a0322360f06e9ac3b09e78c7fa252952c9697
+        61b106d074f7541d3c5bed6c487cbe27b1fb82
+      3c
+        24459cad3cf9e25b8acaf2e20e74304b743aa7
+        046596002a2e562ea5abb3e7acefc54c8f20e3
+      51
+        9a46bc9c93b0370dd3cd8b39e790530e7a8144
+      67
+        2c44425a733d852ae6cb2231ae49d2aa4c0610
+      94
+        562dd69984ce341d13dbf8220a7c33d7e21ed1
+      0e
+        2151c42bc1c3ca6dfce85469ac3e6289be8de2
+      5a
+        3e740f2481e6f6270df25c9465b34c26f09af6
+      05
+        226902c74657ef470d5841b609fabae1e11331
+      9d
+        ca227fa36d680055efb05b0df91e5ad7d1b88b
+      02
+        2eed8e61c1840f74143cec6b417635a26deda1
+      a4
+        b3220bb4e95bae2a71c49edbb57613a2b81882
+        ab7d14abc1710f0f34d7dffd2cc6a7061e731b
+      d9
+        cc204be2e6b373c301dd32294e3fba035f9fed
+      ac
+        bbfbbd40c5a56fb76ec92377ef68a362d9b408
+        85b1aec8b90d062fadf9522aa9a40e78c56488
+      ad
+        83f3a44dead714084f812b399019fe2d2a7397
+      d7
+        6e73d64108aa4a91362309a84814a6d0fb0662
+      d0
+        7df411417d5a537a22bd1fe4e6f5a3135db4cb
+      be
+        f6d1c69e53977b490cbc37647fdfa78d584aa7
+      b3
+        3b3b46aec6601dd6e52618606b3cbdf3ac4471
+        972b41bf890af27ccd4e35063e765f1cd658fd
+      df
+        0c0be22ea7c586243e3404a37059465291eeec
+      a5
+        e1817ae7b7b3701f9061c1ba42ad43a2cf55ce
+        2ee0fcd44580bb826b439425e40b8b3ac1aab3
+        5a975075eef8e24adcbfa46ec38dbb2f41f3b2
+      d6
+        ec3cc6df5f077659b866117c06efa26975ccf5
+      ae
+        975901d406dd9a102fd4d9a70d9d35ebe27a55
+      e5
+        7a8f9f5e5b35fec56e27a4af81d88ccd5a0146
+      f4
+        3a303ef17d45efebd1e8328cc54d35fe34d152
+      c0
+        793d4b80b5d482920e9ff282c6839b03f1da59
+      c9
+        e80ba11be2dd833ea41957ef6fcc0d363546ca
+        6d505845b58699aa4ad31f2991294c0b1af9cd
+      fd
+        98546ff8d15229065fbb656f7df41416f099cc
+        fed537215650edcf49262acd1a519ecfa777a4
+      f2
+        7db55b03bf07a5bb2432b62b689dfa87c948e4
+      e4
+        860fa5e53e9cc8ea9f3cff1d871c5332d27978
+      fe
+        719ab5e4ed99fdbb4e27316fc427a0d9d0540c
+      fb
+        991024a82b30ce6837d07bea6379aa64a4ba85
+      18
+        152cc63bd27c279d5282fbeb7305dfecd7b399
+        dce032811dc158fe4f1043e715bc6a2d68dec2
+      27
+        682e233a939f9279d0dbf6c1047f87fd5d1b18
+      4b
+        cdbd1a01170e69ac6bc1e9ee1ac9c5d7f1ee54
+        d49136c1aeb407f95ee08e0140041be34a7606
+      pack
+      11
+        2da44365b6128a1d1674cce8a86f86ef45174b
+      42
+        c2dcac7d3cc6f667cef07967e08ce44cb52b17
+      73
+        b9aef5ac91558ff57f8b55cf690288a039d1f7
+      80
+        16bf528007277ccaa402f3f5ec58efa9e50773
+        5739ce177714e5a93b8ccc1693e3b9c06b1ca0
+      1a
+        1e78d89b21793cc34d42c0e7cc81ac2f061298
+      28
+        0d443b287b7b70947976fb3086bf6bb5caf477
+      8f
+        ac4ca760575e865f8fbb6251f393f0ca04e2d5
+      10
+        1e0d255fbd4a444287fbce59c5f11f37040dbc
+      19
+        cfdb04723956b2ada9f9f056b92e0f449d1b78
+      4c
+        e677e282e81092118c2e7e5dd7d131a6aba62e
+      26
+        f5c2836a0ba4506fcd7cf62b1228107130a6ad
+      21
+        ff7a7e7160a1a40451de0def51fc18cfba9182
+        bbd151654f6447d56b78d214663783281576d8
+      4d
+        d805ab765f8bfe1dad22291c67d2d16f8bc40b
+      72
+        eb88386a0e0e787df860f296535b4638c6daa4
+      07
+        08881c4897537cb3178ba317ff6526691a3a27
+      5d
+        cd6c4cc5d1494321341bc422acb0c40cd594aa
+        fd491283e794d351106d91bf9a080131ade24c
+      31
+        140aa014f39a5ab723aa3175ab583b3b63fe90
+      info
+      91
+        063f36d9fa7b777f1eae21b9076f5393bbf966
+      65
+        ed3b5974d0497a2786e4065a61b4f96c5c7c0a
+        9c673f200c451289f3d1a5dc2ac495806cc62a
+      62
+        9b1ed4771d0a4147bfbe6fd4f1b56653f71c50
+      3f
+        9a3c6788073b18e520131a5cc90dc5b0e7efbb
+        aecb01199e3e5d067326c77cf6d80f75ab26c7
+      30
+        970a82d06cfb7fb1ec359cb0887f1143145bde
+      5b
+        e68b042cd924b07c4acbd27d5804e0ecd8e1a7
+        328163bc842c3db84ea3a094af382a56c65368
+      08
+        41feef9ad13b9113dcbabf8383983ebaf14f83
+        888f846ac45cf83181568125ff91a3518c60be
+        8f910c4f5d62d445d2cacd568d5cfb553aa05f
+      6d
+        23d8ca2c03848d629891df3052aad1f4a13c64
+      97
+        6cec13d5285b27ad96addfb7fb2e14f116785a
+      64
+        51b11bc1965a3c4f42ce1b2035b5adb4dc13ef
+      bf
+        2c0684bdf5e1dfb4b7730992c7a0cc985cee44
+      d4
+        f4030d855eab802a4f3e64ec1a597d3f581563
+        28146ca2c71767d93255b1136f275e614a4247
+      a0
+        f12ae20bdd9fff0378c8d7f0651c12481b5dfa
+      dd
+        6a2188754edfdee62cfbb2562320840b1cf8bc
+      dc
+        f47fb95c90626ee7c007991e3bda260a8b3e66
+        29c4358e23ffe036420bf96f8c92a7591796f7
+      a9
+        3c02ab966e8fc6b75fb19102d49e7f28fc9643
+        48bd251ee1cbea5e23d06964116ba4c526b45d
+      aa
+        6b4895a9764144c49d5e9c65fdcfdf32eb14b9
+      b7
+        e8f314d18ad83b5dee61bc75ffb42336d1f7ad
+        ce30369e26b4ffa484fc062e009dfc273a4812
+        81b72caae45871be7715ceb9f9ff65acda3768
+        ec0175480dcf3b6966c5afb3df92ddd9bb16c7
+      a8
+        dcebad1b0445fcbed39f7aecff49db2efb8a57
+      b0
+        a8a6fa4db386b857020a8d7d1f281cc4a9c069
+      b9
+        f5cb64709c6c51699687e25ac17da56ba8457d
+        9fb8c9a5278995e1ea0f12a428471eb2d2fc9c
+      c4
+        2b9b20cfdaad8bc44589abd71852525d52b5eb
+      e1
+        e5c554088636ad5f9b06a8a787ae0820682d63
+      cc
+        10b90d3473fbc25f10af2227e834b664c9271f
+      e6
+        40eaa878a583e12e5dfe43a08fb5fafbb33de7
+        6e60d7b2e73f84a9be9ad826596628236cb4b7
+        9de29bb2d1d6434b8b29ae775ad8c2e48c5391
+      f9
+        dbe12f18c760c33574a452407169b4879875fa
+      f0
+        674e56ab0c220d0bb30f083b1a0f0a535a1a55
+        30dcfa8ef6acb608173cb6ec7ebf2be1ac0145
+      fa
+        a4925851121a959d715c5f15032d159aada76d
+      ff
+        963fbee98bddfe6205cf9e7fc012b72fbcdbe0
+      f6
+        a152420e17949554ec11c774b8ca042a401d48
+      f1
+        ee422af8b51834655aef07255542316f17b989
+      cb
+        86df46744bce2172c85ee606168ab1c5c174bb
+      2d
+        3e00c8213f4d5d6b701833b7be0a2892d96ee1
+        2e25a915a2d636a6782a943ab90564b36f0e92
+        244e104af0a8ca974eac85c2df92c9928d94e8
+      83
+        db619d00034adc11a85b288046f45a2751fda5
+      84
+        b662d1e4a09d53951a00ae4588b1f941e55d77
+        23e44e433b7e3bb1d0020f49b4b45161b3747d
+      24
+        afd4613ca6fa2ec2b2ebe71197f0b9885cf79b
+      4f
+        49681219473b3162ec5fc24095ebdba816f141
+      8d
+        6230819c6ba68deb36a237bb704190a4d83d59
+        0ea6e5bfa3c091537051f1507842f321e7c02f
+      15
+        811832d1b2fbe212f437019d75881229536e7c
+        06b4c430c7316a17f6d1cade6a84701bc0f524
+      85
+        614037ce874f6aafc1fb2a47b34e6d61a5d99f
+      40
+        cd31d44046656fad8ce4c712eb1fffed4a916a
+      2e
+        f93322b11bef44e08afef8d10a563a5e8d294e
+      2b
+        458061848e99007b8a0592f35c70fb00ed0e1b
+      47
+        9dbb0f6a3c294d0d9426753ed28fa68186d2ea
+        a37ab40bb20b045cbd954e5c4a57f98e5842f7
+      13
+        7d8be3156144166c448f5f7dc352d09a714552
+      7a
+        da5a406db885ef65ae9b92f25d8e68cadf971f
+        f04c4262fd0a025903c7760352fefcc47b4a2a
+      14
+        33f991e6da372c7f98dca3e49b90687e88b438
+    HEAD
+    info
+      exclude
+    logs
+      HEAD
+      refs
+        heads
+        remotes
+    description
+    hooks
+      commit-msg.sample
+      pre-rebase.sample
+      sendemail-validate.sample
+      pre-commit.sample
+      applypatch-msg.sample
+      fsmonitor-watchman.sample
+      pre-receive.sample
+      prepare-commit-msg.sample
+      post-update.sample
+      pre-merge-commit.sample
+      pre-applypatch.sample
+      pre-push.sample
+      update.sample
+      push-to-checkout.sample
+    refs
+      heads
+        main
+      tags
+      remotes
+        origin
+    index
+    COMMIT_EDITMSG
   STRUCTURE.txt

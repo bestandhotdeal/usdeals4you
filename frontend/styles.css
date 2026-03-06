@@ -29,6 +29,9 @@ body{
 }
 
 a{text-decoration:none;color:inherit}
+
+.u{ text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; text-decoration-color: rgba(103,232,249,.55); }
+.u:hover{ color: var(--cyan); }
 img{display:block;max-width:100%}
 code{
   background:rgba(255,255,255,.06);
@@ -60,10 +63,20 @@ code{
 }
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .logo{
-  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
-  font-weight:900;color:#061223;
-  background:linear-gradient(135deg,var(--vio),var(--cyan));
+  width:44px;height:44px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg, rgba(124,58,237,.55), rgba(103,232,249,.35));
+  border:1px solid var(--line);
+  box-shadow:0 0 0 1px rgba(255,255,255,.06) inset;
+  overflow:hidden;
   flex:0 0 auto;
+}
+.logo-img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:4px;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));
 }
 .brand-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -371,7 +384,12 @@ code{
   gap:8px;
   flex-wrap:wrap;
 }
-.price-new{font-size:22px;font-weight:900}
+.price-new{
+   font-size: 36px !important;
+  font-weight: 1000 !important;
+  color: #ff2d2d !important;     /* đỏ đậm */
+}
+
 .price-old{
   color:var(--muted);
   text-decoration:line-through;
@@ -708,68 +726,63 @@ code{
 .line-through:empty{display:none}
 
 
-/* Footer */
-.site-footer{
-  margin-top:16px;
-  border-top:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(124,58,237,.10), rgba(7,11,22,.5));
-}
-.footer-inner{
-  padding:14px 0 20px;
+/* Social icons with brand colors */
+.footer-social{
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.social-link{
+  width:40px;height:40px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  color:rgba(236,241,255,.82);
+  transition:transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.social-link svg{display:block}
+.social-ico{width:20px;height:20px;fill:currentColor}
+
+.social-link.facebook{ color:#1877F2; border-color:rgba(24,119,242,.35); }
+.social-link.facebook:hover{ background:rgba(24,119,242,.18); border-color:rgba(24,119,242,.6); box-shadow:0 12px 26px rgba(24,119,242,.18); transform:translateY(-2px); }
+
+.social-link.tiktok{ color:#FF0050; border-color:rgba(255,0,80,.30); }
+.social-link.tiktok:hover{ background:rgba(255,0,80,.16); border-color:rgba(255,0,80,.55); box-shadow:0 12px 26px rgba(255,0,80,.16); transform:translateY(-2px); }
+
+.social-link.telegram{ color:#229ED9; border-color:rgba(34,158,217,.32); }
+.social-link.telegram:hover{ background:rgba(34,158,217,.16); border-color:rgba(34,158,217,.6); box-shadow:0 12px 26px rgba(34,158,217,.16); transform:translateY(-2px); }
+
+/* Bottom disclosure: no box, gold text */
+.footer-bottom{
+  padding:10px 0 22px;
+  display:flex;
   align-items:flex-start;
-  gap:10px;
+  justify-content:space-between;
+  gap:14px;
   flex-wrap:wrap;
-}
-.footer-title{
-  font-weight:800;
-  font-size:14px;
-}
-.footer-sub{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:2px;
-}
-.footer-meta{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  color:var(--muted);
-  font-size:12px;
 }
 
+.footer-copy{ color:var(--muted); font-size:12px; margin-left:auto; }
+
+/* Mobile */
+@media (max-width: 760px){
+  .footer-inner{ flex-wrap:wrap; }
+  .footer-actions{ align-items:flex-start; width:100%; }
+  .footer-links{ justify-content:flex-start; }
+  .footer-social{ justify-content:flex-start; }
+  .footer-copy{ margin-left:0; }
+}
+
+
 /* Modal */
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:120;
-  display:grid;
-  place-items:center;
-  padding:14px;
-}
 .modal.hidden{display:none}
-.modal-backdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(2,6,23,.65);
-  backdrop-filter:blur(4px);
-}
-.modal-card{
-  position:relative;
-  z-index:1;
-  width:min(520px, 100%);
-  border:1px solid var(--line2);
-  border-radius:16px;
-  background:linear-gradient(180deg, rgba(16,23,46,.98), rgba(10,15,28,.98));
-  box-shadow:0 18px 50px rgba(0,0,0,.45);
-  padding:12px;
-}
-.modal-card .field input[disabled]{
-  opacity:1;
-  color:#bfdbfe;
-  cursor:not-allowed;
-}
+.modal{position:fixed;inset:0;z-index:99999}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.modal-card{position:relative;max-width:520px;margin:12vh auto;background:#0b1220;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px 14px 16px;color:#fff}
 
 /* Responsive */
 @media (max-width: 1100px){
@@ -844,6 +857,817 @@ code{
   }
 }
 
+/* =========================
+   UX PATCH: Expired + Rating + Gallery + Reviews
+   (append at the END of styles.css)
+   ========================= */
+
+.deal-card { grid-template-columns: 180px minmax(0,1fr); }
+.deal-thumb { aspect-ratio: 16 / 11; }
+.deal-thumb img { filter: saturate(1.02); }
+
+.deal-card.is-expired { opacity: .92; }
+.chip.expired { background: rgba(239,68,68,.9); border-color: rgba(239,68,68,.35); }
+.expired-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  letter-spacing:.16em;
+  font-size:18px;
+  color:#fff;
+  background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.60));
+  text-shadow: 0 10px 18px rgba(0,0,0,.55);
+  z-index:1;
+  pointer-events:none;
+}
+.expired-callout{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background: rgba(239,68,68,.16);
+  border:1px solid rgba(239,68,68,.35);
+  font-weight:800;
+  margin-top:8px;
+}
+
+.deal-rating-row { margin: 6px 0 6px; }
+.stars { font-size: 13px; letter-spacing: .08em; color: rgba(245, 158, 11, 0.95); }
+.stars.muted { color: rgba(255,255,255,.45); }
+.stars-count { letter-spacing: normal; color: rgba(255,255,255,.55); margin-left: 4px; }
+
+.deal-note{
+  margin: 8px 0 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,.65);
+  line-height: 1.35;
+}
+.link-btn{
+  appearance:none;
+  border:none;
+  background:transparent;
+  color: rgba(96, 165, 250, 1);
+  font-weight: 800;
+  cursor:pointer;
+  padding:0;
+  text-decoration: underline;
+}
+.link-btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+.load-more-row{
+  display:flex;
+  justify-content:center;
+  padding: 14px 0 6px;
+}
+
+@media (max-width: 860px){
+  .deal-card { grid-template-columns: 1fr; }
+  .deal-thumb { border-right: none; border-bottom:1px solid var(--line); }
+}
+
+/* ===== Deal detail gallery ===== */
+.detail { display:grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; }
+.detail-left { min-width:0; }
+.detail-right { min-width:0; }
+.detail-title{ margin-top:6px; }
+.gallery{ margin-top:10px; }
+.gallery-main{
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background: var(--panel2);
+}
+.gallery-main img{
+  width:100%;
+  height:360px;
+  object-fit: cover;
+  display:block;
+}
+.gallery-nav{
+  position:absolute;
+  top:50%;
+  transform: translateY(-50%);
+  width:38px;
+  height:38px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(2,6,23,.55);
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+  cursor:pointer;
+}
+.gallery-nav.left{ left:10px; }
+.gallery-nav.right{ right:10px; }
+.gallery-thumbs{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.thumb-btn{
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(2,6,23,.35);
+  border-radius:12px;
+  padding:0;
+  overflow:hidden;
+  cursor:pointer;
+  width:72px;
+  height:54px;
+}
+.thumb-btn.active{ outline: 2px solid rgba(96,165,250,.9); }
+.thumb-btn img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Reviews */
+.review-form{
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.02);
+  border-radius:14px;
+  padding:12px;
+  margin-top:10px;
+}
+.review-list{ margin-top:12px; display:grid; gap:10px; }
+.review-item{
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.02);
+  border-radius:14px;
+  padding:10px 12px;
+}
+.review-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.review-comment{ margin-top:6px; color: rgba(255,255,255,.82); line-height:1.4; }
+
+/* Stars picker */
+.stars-picker{
+  display:flex;
+  flex-direction: row-reverse;
+  gap:4px;
+  justify-content:flex-end;
+}
+.stars-picker input{ display:none; }
+.stars-picker label{
+  cursor:pointer;
+  font-size:18px;
+  color: rgba(255,255,255,.35);
+}
+.stars-picker input:checked ~ label,
+.stars-picker label:hover,
+.stars-picker label:hover ~ label{
+  color: rgba(245, 158, 11, 0.95);
+}
+
+@media (max-width: 980px){
+  .detail{ grid-template-columns: 1fr; }
+  .gallery-main img{ height: 300px; }
+}
+
+.img-preview-row{ display:flex; gap:10px; align-items:center; }
+.img-preview.small{ width:72px; height:72px; border-radius:12px; object-fit:cover; border:1px solid var(--line); }
+
+/* ===== PATCH A/B/C/D ===== */
+
+/* D) star vàng nổi */
+.stars { color: rgba(245,158,11,0.95) !important; }
+.stars .c { color: rgba(255,255,255,0.65) !important; }
+
+/* A) note nổi bật */
+.deal-note-highlight{
+  margin: 8px 0 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.12);
+  color: rgba(255,255,255,0.90);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+.deal-note-highlight b{ color: rgba(245,158,11,0.95); }
+
+/* B) ảnh nhỏ hơn (load nhanh) */
+.deal-thumb img{
+  max-height: 180px;
+  object-fit: cover;
+}
+
+/* C) nếu không có giá thì đừng hiện gì (đừng hiện "No Price") */
+.price-note, .no-price { display:none !important; }
+
+.stars { color: var(--yellow) !important; }
+.stars .stars-count { color: var(--muted) !important; }
+
+/* Admin deal list: move actions to bottom */
+.stack-item{
+  display:grid !important;
+  grid-template-columns:80px minmax(0,1fr) !important;
+  grid-template-areas:
+    "thumb main"
+    "actions actions" !important;
+  gap:8px !important;
+}
+.stack-thumb{ grid-area: thumb; }
+.stack-main{ grid-area: main; }
+.stack-actions{
+  grid-area: actions;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:flex-start !important;
+}
 
 
+/* === UsDeals Footer + Logo FIX (v2) === */
+.logo img, .logo-img{
+  width:36px !important;
+  height:36px !important;
+  object-fit:contain !important;
+  display:block !important;
+}
 
+
+/* === Cookie Consent popup === */
+.cookie-banner{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#111;
+color:white;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:9999;
+font-size:14px;
+}
+
+.cookie-buttons button{
+margin-left:10px;
+padding:6px 12px;
+border:none;
+cursor:pointer;
+}
+
+#acceptCookies{
+background:#28a745;
+color:white;
+}
+
+#declineCookies{
+background:#555;
+color:white;
+}
+
+/* ===== Deal Summary under gallery ===== */
+.deal-summary{
+  padding:14px;
+}
+
+.deal-summary-grid{
+  display:grid;
+  grid-template-columns: 120px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+}
+
+.deal-summary-thumb img{
+  width:120px;
+  height:96px;
+  border-radius:12px;
+  object-fit:cover;
+  border:1px solid var(--line);
+  background: var(--panel2);
+}
+
+.deal-summary-main .price-new{
+  font-size:30px;
+  font-weight:1000;
+  letter-spacing:.2px;
+  color: #fff;
+  text-shadow: 0 10px 22px rgba(0,0,0,.35);
+}
+
+.deal-summary-main .action-btn{
+  width:fit-content;
+  padding:10px 14px;
+  border-radius:12px;
+}
+
+.detail-info .info-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px dashed rgba(255,255,255,.08);
+}
+.detail-info .info-row:last-child{ border-bottom:none; }
+.detail-info .info-row span{
+  color: var(--muted);
+  font-weight:800;
+}
+
+@media (max-width: 860px){
+  .deal-summary-grid{
+    grid-template-columns: 1fr;
+  }
+  .deal-summary-thumb img{
+    width:100%;
+    height:180px;
+  }
+  .deal-summary-main .action-btn{
+    width:100%;
+    text-align:center;
+  }
+}
+
+/* ===== Footer redesign (no wrapping mess) ===== */
+.footer-links{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap:10px 14px;
+  align-items:start;
+  justify-content:stretch;
+  max-width: 760px;
+}
+
+.footer-dot{ display:none !important; }
+
+.footer-links a{
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.02);
+  text-decoration:none;
+  font-weight:900;
+  font-size:13px;
+}
+.footer-links a:hover{
+  background:rgba(103,232,249,.10);
+  border-color:rgba(103,232,249,.25);
+  color:var(--cyan);
+}
+
+/* Highlight legal lines in strong gold */
+.footer-highlight{
+  margin-top:10px;
+  font-size:12px;
+  line-height:1.45;
+  color: var(--yellow) !important;
+  font-weight:900;
+}
+
+.deal-legal-note{
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+
+/* ===== Footer v2 (clean, no pills, no messy wrap) ===== */
+.site-footer{
+  margin-top:22px;
+  border-top:1px solid var(--line);
+  background: linear-gradient(180deg, rgba(124,58,237,.10), rgba(7,11,22,.78));
+}
+
+.footer-inner{
+  padding:24px 0 12px;
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap:18px 24px;
+  align-items:start;
+}
+
+.footer-brand{ min-width:0; }
+.footer-title{ font-weight:1000; letter-spacing:.2px; }
+.footer-sub{ color:var(--muted); font-size:12px; margin-top:2px; }
+
+.footer-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+/* Links: simple text, no pill */
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:10px 18px;
+  max-width: 980px;
+}
+
+.footer-dot{ display:none !important; }
+
+.footer-links a{
+  padding:0;
+  border:none;
+  background:none;
+  border-radius:0;
+  font-size:13px;
+  font-weight:900;
+  color:rgba(236,241,255,.92);
+  text-decoration:none;
+  line-height:1.2;
+  white-space:nowrap;
+}
+
+.footer-links a:hover{
+  color:var(--cyan);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* Two legal lines: center + GOLD BOLD */
+.footer-legal{
+  max-width:980px;
+  text-align:center;
+  margin-top:8px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.footer-highlight{
+  color: var(--yellow) !important;
+  font-weight:1000;
+  font-size:13px;
+  line-height:1.4;
+}
+
+
+.footer-logo{
+  width:46px;height:46px;
+  border-radius:14px;
+  object-fit:contain;
+  padding:5px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+}
+
+
+/* bottom row: social left, copyright right */
+.footer-bottom{
+  padding:14px 0 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+
+.footer-social{
+  display:flex;
+  gap:10px;
+  justify-content:flex-start;
+}
+
+.footer-copy{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* Mobile */
+@media (max-width: 860px){
+  .footer-inner{
+    grid-template-columns: 1fr;
+  }
+  .footer-actions{
+    align-items:flex-start;
+  }
+  .footer-links{
+    justify-content:flex-start;
+    white-space:normal;
+  }
+  .footer-legal{
+    text-align:left;
+  }
+  .footer-copy{
+    margin-left:0;
+  }
+}
+
+/* ===== FIX: Deal Summary layout (make it compact, no empty column) ===== */
+
+/* Nếu .deal-summary-grid đang là grid 2 cột và bị cột rỗng -> ép về 1 cột */
+.deal-summary-grid{
+  display: block !important;
+}
+
+/* Giới hạn độ rộng khung nội dung để không bị trống quá nhiều */
+.deal-summary{
+  max-width: 520px;
+  padding: 14px !important;
+}
+
+/* NOTE vàng: full width, nằm ngang, không dựng dọc */
+.deal-summary-note{
+  display:block !important;
+  width:100% !important;
+  margin: 0 0 12px 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(251,191,36,.22) !important;
+  background: rgba(251,191,36,.08) !important;
+  color: rgba(251,191,36,.85) !important;   /* vàng vừa, không quá đậm */
+  font-size: 12.5px !important;
+  line-height: 1.35 !important;
+  font-weight: 700 !important;
+  white-space: normal !important;
+  word-break: normal !important;
+}
+
+/* Price row: gọn + nổi bật */
+.deal-summary .price-row{
+  display:flex !important;
+  align-items: baseline !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin-bottom: 10px !important;
+}
+
+.deal-summary .price-new{
+  font-size: 36px !important;
+  font-weight: 1000 !important;
+  color: #ff2d2d !important;     /* đỏ đậm */
+}
+
+.deal-summary .price-old{
+  font-size: 14px !important;
+  color: rgba(236,241,255,.58) !important;
+}
+
+.deal-summary .save-chip{
+  font-size: 12px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  font-weight: 900 !important;
+  background: rgba(255,45,45,.10) !important;
+  border: 1px solid rgba(255,45,45,.22) !important;
+  color: rgba(255,45,45,.95) !important;
+}
+
+/* Deal Info: label trái - value phải, không trùng nhau */
+.deal-summary .detail-info{
+  margin-top: 12px !important;
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+}
+
+.deal-summary .detail-info h3{
+  margin: 0 0 8px 0 !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+}
+
+.deal-summary .detail-info .info-row{
+  display: grid !important;
+  grid-template-columns: 140px 1fr !important;
+  gap: 12px !important;
+  padding: 8px 0 !important;
+  border-bottom: 1px dashed rgba(255,255,255,.08) !important;
+  align-items: start !important;
+}
+
+.deal-summary .detail-info .info-row span{
+  color: rgba(159,176,214,.95) !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.deal-summary .detail-info .info-row > :not(span){
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;   /* không bị đè chữ */
+}
+
+.deal-summary .detail-info .info-row:last-child{
+  border-bottom: none !important;
+}
+
+/* Mobile: đổi sang 1 cột để dễ đọc */
+@media (max-width: 560px){
+  .deal-summary{ max-width: 100%; }
+  .deal-summary .detail-info .info-row{
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  .deal-summary .detail-info .info-row span{
+    white-space: normal !important;
+  }
+}
+
+
+/* =========================================================
+   Deal Detail: Professional Mini Card (thumbnail left, info right)
+   ========================================================= */
+
+.deal-summary{
+  padding: 14px !important;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)) !important;
+}
+
+/* Mini card layout */
+.deal-mini{
+  display:grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 16px;
+  align-items:start;
+}
+
+.deal-mini-thumb img{
+  width:140px;
+  height:140px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+}
+
+/* Note (gold, not too bold) */
+.deal-mini-note{
+  margin: 0 0 12px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(251,191,36,.22);
+  background: rgba(251,191,36,.07);
+  color: rgba(251,191,36,.82);
+  font-size: 12.5px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+/* Price */
+.deal-mini-price{
+  display:flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.deal-mini .price-new{
+  font-size: 36px !important;
+  font-weight: 1000 !important;
+  color: #ff2d2d !important;
+  letter-spacing: .2px;
+  text-shadow: 0 10px 22px rgba(0,0,0,.35);
+}
+
+.deal-mini .price-old{
+  color:var(--muted);
+  text-decoration:line-through;
+  font-size:13px;
+}
+
+.deal-mini .save-chip{
+  font-size:11px;
+  font-weight:800;
+  color:#bbf7d0;
+  border:1px solid rgba(52,211,153,.25);
+  background:rgba(52,211,153,.08);
+  border-radius:999px;
+  padding:3px 8px;
+}
+
+/* CTA */
+.deal-mini-cta{ margin-top: 10px; }
+.deal-mini .action-btn{
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+}
+
+/* Info */
+.deal-mini-info{
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.deal-mini-info-title{
+  font-size: 15px;
+  font-weight: 1000;
+  margin-bottom: 8px;
+}
+
+.mini-row{
+  display:grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.08);
+  align-items: start;
+}
+
+.mini-row span{
+  color: rgba(159,176,214,.95);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.mini-row b{
+  margin: 0;
+  font-weight: 800;
+  color: rgba(236,241,255,.92);
+  overflow-wrap: anywhere;
+}
+
+.mini-row:last-child{ border-bottom: none; }
+
+/* Mobile */
+@media (max-width: 560px){
+  .deal-mini{
+    grid-template-columns: 1fr;
+  }
+  .deal-mini-thumb img{
+    width: 100%;
+    height: 190px;
+  }
+  .deal-mini .action-btn{
+    width: 100%;
+    text-align:center;
+  }
+  .mini-row{
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .mini-row span{ white-space: normal; }
+}
+
+
+/* Wider deal-summary card */
+.deal-summary{ max-width: 860px; }
+
+/* =========================
+   Expired: block affiliate click + flash highlight note
+   ========================= */
+
+@keyframes expiredFlash{
+  0%   { box-shadow: 0 0 0 0 rgba(245,158,11,.0); filter:none; }
+  20%  { box-shadow: 0 0 0 6px rgba(245,158,11,.40); filter: brightness(1.08); }
+  40%  { box-shadow: 0 0 0 0 rgba(245,158,11,.0); filter:none; }
+  60%  { box-shadow: 0 0 0 6px rgba(245,158,11,.40); filter: brightness(1.08); }
+  100% { box-shadow: 0 0 0 0 rgba(245,158,11,.0); filter:none; }
+}
+
+.expired-flash{
+  animation: expiredFlash .95s ease-in-out;
+}
+
+/* Make blocked targets feel "disabled" */
+a[data-expired-block="1"],
+button[data-expired-block="1"],
+.expired-block-link{
+  cursor:not-allowed;
+  opacity:.92;
+}
+
+
+/* =========================
+   Modal opt-in checkbox row (report expired / submit review)
+   Fix checkbox being stretched by .field input{width:100%}
+   ========================= */
+
+.field input[type="checkbox"],
+.field input.optin-check{
+  width:auto !important;
+  padding:0 !important;
+  border:none !important;
+  background:transparent !important;
+  border-radius:4px !important;
+  box-shadow:none !important;
+  outline:none !important;
+  min-width:0 !important;
+}
+
+.optin-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:6px;
+}
+
+.optin-label{
+  cursor:pointer;
+  line-height:1.25;
+}
+
+.optin-text{
+  color: rgba(245,158,11,.95);
+  font-weight:700;
+  display:block;
+}

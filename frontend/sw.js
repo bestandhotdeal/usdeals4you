@@ -1,14 +1,16 @@
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
-    // clear caches
+    // clear all caches
     const keys = await caches.keys();
     await Promise.all(keys.map(k => caches.delete(k)));
-    // unregister this service worker
+
+    // unregister this worker (and effectively remove old GoDaddy SW too after update)
     await self.registration.unregister();
+
     // refresh open tabs
     const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const c of clients) {

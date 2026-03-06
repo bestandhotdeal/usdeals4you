@@ -402,3 +402,54 @@
     subscribeAlert,
   };
 })();
+
+
+// ===== PATCH A: Require email before "Expired" =====
+window.DealHub = window.DealHub || {};
+
+window.DealHub.isValidEmail = function (email) {
+  const e = String(email || "").trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+};
+
+window.DealHub.requireEmail = async function () {
+  const msg = "Bạn vui lòng nhập email để có thể bấm expired";
+  let email = (localStorage.getItem("expired_email") || "").trim();
+
+  // nếu chưa có email lưu, hỏi
+  if (!email) {
+    email = prompt(msg) || "";
+    email = email.trim();
+  } else {
+    // nếu đã có, hỏi xác nhận nhanh (optional)
+    // bỏ confirm cũng được
+  }
+
+  if (!window.DealHub.isValidEmail(email)) {
+    alert(msg);
+    return null;
+  }
+
+  localStorage.setItem("expired_email", email);
+
+  // nếu email chưa tồn tại thì insert vào subscriber (on conflict do nothing)
+  try {
+    await window.sb.from("site_subscribers").upsert({ email }, { onConflict: "email" });
+  } catch (e) {
+    // ignore
+  }
+
+  return email;
+};
+
+window.DealHub.reportExpiredWithEmail = async function (dealId) {
+  const email = await window.DealHub.requireEmail();
+  if (!email) return { ok: false, reason: "missing_email" };
+
+  const { error } = await window.sb
+    .from("deal_expired_reports")
+    .insert({ deal_id: dealId, reporter_email: email });
+
+  if (error) throw error;
+  return { ok: true };
+};
